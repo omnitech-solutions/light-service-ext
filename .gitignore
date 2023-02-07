@@ -6,7 +6,15 @@
 /pkg/
 /spec/reports/
 /tmp/
+/rdoc/
 /.idea/
+
+*.gem
+*.rbc
+
+.config
+.yardoc
+Gemfile.lock
 
 # rspec failure tracking
 .rspec_status

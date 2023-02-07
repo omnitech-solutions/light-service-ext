@@ -2,38 +2,28 @@
 
 require_relative "lib/light_service_ext/version"
 
-Gem::Specification.new do |spec|
-  spec.name = "light_service_ext"
-  spec.version = LightServiceExt::VERSION
-  spec.authors = ["Desmond O'Leary"]
-  spec.email = ["desoleary@gmail.com"]
+Gem::Specification.new do |gem|
+  gem.authors = ["Desmond O'Leary"]
+  gem.email = ["desoleary@gmail.com"]
+  gem.description = %q{Extends light-service with opinionated functionality}
+  gem.summary = %q{Extends light-service with opinionated functionality}
+  gem.homepage = "https://github.com/omnitech-solutions/light-service-ext"
+  gem.license = "MIT"
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  gem.files = `git ls-files`.split($\)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(spec|features)/})
+  gem.name = "light_service_ext"
+  gem.require_paths = ["lib"]
+  gem.version = LightServiceExt::VERSION
+  gem.required_ruby_version = ">= 2.6.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  gem.metadata["homepage_uri"] = gem.homepage
+  gem.metadata["source_code_uri"] = gem.homepage
+  gem.metadata["changelog_uri"] = "#{gem.homepage}/CHANGELOG.md"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  gem.add_runtime_dependency("light-service", ">= 0.18.0")
 
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject do |f|
-      (f == __FILE__) || f.match(%r{\A(?:(?:test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
-    end
-  end
-  spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
-
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  gem.add_development_dependency("rake", "~> 13.0.6")
+  gem.add_development_dependency("rspec", "~> 3.12.0")
 end
