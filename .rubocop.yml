@@ -13,6 +13,9 @@ AllCops:
     - 'bin/*'
     - 'light_service_ext.gemspec'
 
+Style/Documentation:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 
@@ -167,3 +170,9 @@ Style/OpenStructUse: # new in 1.23
   Enabled: true
 Style/SelectByRegexp: # new in 1.22
   Enabled: true
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/LeakyConstantDeclaration:
+  Enabled: false

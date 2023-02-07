@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+require 'light-service'
+require 'dry-validation'
+
+Dir.glob("lib/**/*.rb").each { |f| require File.join(__dir__, "..", f) }
+
+require 'coverage_helper'
+require 'light-service/testing'
+
 require "light_service_ext"
 
 RSpec.configure do |config|
