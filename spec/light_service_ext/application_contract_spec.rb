@@ -1,17 +1,23 @@
 module LightServiceExt
   RSpec.describe ApplicationContract do
-    describe '.register_macro' do
-      describe ':email' do
-        let(:contract_class) do
-          Class.new(ApplicationContract) do
-            params do
-              required(:email).maybe(:string)
-            end
-
-            rule(:email).validate(:email)
-          end
+    let(:contract_class) do
+      Class.new(ApplicationContract) do
+        params do
+          required(:email).maybe(:string)
         end
 
+        rule(:email).validate(:email)
+      end
+    end
+
+    describe '.keys' do
+      it 'returns schema rule keys' do
+        expect(contract_class.keys).to match_array([:email])
+      end
+    end
+
+    describe '.register_macro' do
+      describe ':email' do
         let(:email) { nil }
         let(:params) { { :email => email } }
 
