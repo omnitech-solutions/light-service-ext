@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'light-service'
-require 'dry-validation'
-
-Dir.glob("lib/**/*.rb").each { |f| require File.join(__dir__, "..", f) }
+require File.join(__dir__, "..", 'dev', 'setup')
 
 require 'coverage_helper'
 require 'light-service/testing'
