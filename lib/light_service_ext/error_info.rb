@@ -2,15 +2,14 @@
 
 module LightServiceExt
   class ErrorInfo
-    attr_reader :error, :type, :message, :title, :ctx
+    attr_reader :error, :type, :message, :title
 
-    def initialize(error, ctx: nil, message: nil, fatal: false)
+    def initialize(error, message: nil, fatal: false)
       @fatal = fatal
       @error = error
       @type = error.class.name
-      @message = message || error.message
-      @title = "#{error.class.name} : #{error.message}"
-      @ctx = ctx
+      @message = message || error&.message
+      @title = "#{error.class.name} : #{error&.message}"
     end
 
     def fatal_error?
@@ -21,9 +20,7 @@ module LightServiceExt
       header = fatal_error? ? "SERVER ERROR FOUND" : "ERROR FOUND"
 
       <<~TEXT
-        =========== #{header}: #{title} ===========\n
-        #{clean_backtrace[0, 3]&.join("\n")}
-        #{'=' * 56}
+        =========== #{header}: #{title} ===========
 
         FULL STACK TRACE
         #{clean_backtrace.join("\n")}
@@ -38,22 +35,25 @@ module LightServiceExt
         message: message,
         exception: title,
         backtrace: clean_backtrace[0, 3]&.join("\n"),
-        ctx: ctx&.to_h,
-        error: exception,
-        fatal_error: fatal_error?
+        error: error,
+        fatal_error?: fatal_error?
       }
+    end
+
+    def backtrace
+      error&.backtrace || []
     end
 
     def clean_backtrace
       @clean_backtrace ||= if defined? Rails
-                             Rails.backtrace_cleaner.clean(error.backtrace || [])
+                             Rails.backtrace_cleaner.clean(backtrace || [])
                            else
-                             error.backtrace || []
+                             backtrace || []
                            end
     end
 
     def non_fatal_error?
-      self.class.non_fatal_errors.map(&:to_s).include?(type)
+      error.nil? || self.class.non_fatal_errors.map(&:to_s).include?(type)
     end
 
     class << self

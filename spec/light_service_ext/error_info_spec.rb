@@ -1,8 +1,7 @@
 RSpec.describe LightServiceExt::ErrorInfo do
-  subject(:instance) { error_info_class.new(error, ctx: ctx, message: message_override, fatal: fatal) }
+  subject(:instance) { error_info_class.new(error, message: message_override, fatal: fatal) }
 
   let(:value) { 'some-value' }
-  let(:ctx) { { key: value } }
   let(:message_override) { nil }
   let(:message) { 'some-error' }
   let(:fatal) { nil }
@@ -60,12 +59,12 @@ RSpec.describe LightServiceExt::ErrorInfo do
         let(:fatal) { true }
 
         it 'returns true' do
-          expect(instance).to be_fatal_error
+          expect(instance.fatal_error?).to be_truthy
         end
       end
 
       it 'returns false' do
-        expect(instance).not_to be_fatal_error
+        expect(instance.fatal_error?).to be_falsey
       end
     end
   end
@@ -75,15 +74,37 @@ RSpec.describe LightServiceExt::ErrorInfo do
       expect(instance.error_summary).to eql(<<~TEXT
         =========== SERVER ERROR FOUND: StandardError : some-error ===========
 
-        some-backtrace-item
-        ========================================================
-
         FULL STACK TRACE
         some-backtrace-item
 
         ========================================================
       TEXT
                                            )
+    end
+  end
+
+  describe '#to_h' do
+    subject(:hash) { instance.to_h }
+
+    it 'returns custom key value pairs' do
+      expect(hash.keys).to match_array(%i[type message exception backtrace error fatal_error?])
+
+      expect(hash[:type]).to eql(error.class.name)
+      expect(hash[:message]).to eql(message)
+      expect(hash[:exception]).to eql("#{error.class.name} : #{error.message}")
+      expect(hash[:backtrace]).to eql(backtrace.join)
+      expect(hash[:error]).to eql(error)
+      expect(hash[:fatal_error?]).to be_truthy
+    end
+
+    context 'with non fatal error' do
+      let(:error) { ArgumentError.new(message) }
+
+      before { error_info_class.non_fatal_errors = [ArgumentError] }
+
+      it 'returns non fatal error' do
+        expect(hash[:fatal_error?]).to be_falsey
+      end
     end
   end
 end

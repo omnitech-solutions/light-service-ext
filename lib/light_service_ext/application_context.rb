@@ -6,6 +6,14 @@ module LightServiceExt
       end
     end
 
+    def invoked_action
+      self[:invoked_action]
+    end
+
+    def validation_errors
+      self[:errors]
+    end
+
     def method_missing(method_name, *arguments, &block)
       return self[method_name] if key?(method_name)
 

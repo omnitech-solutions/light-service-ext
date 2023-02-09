@@ -2,6 +2,7 @@
 
 # Sets up environment for running specs and via irb e.g. `$ irb -r ./dev/setup`
 
+require 'json'
 require 'light-service'
 require 'dry-validation'
 

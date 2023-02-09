@@ -233,3 +233,6 @@ RSpec/ExampleLength:
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+RSpec/PredicateMatcher:
+  Enabled: false
