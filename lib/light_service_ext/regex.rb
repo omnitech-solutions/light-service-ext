@@ -1,7 +1,7 @@
 module LightServiceExt
   module Regex
     TYPE = {
-      :email => URI::MailTo::EMAIL_REGEXP
+      email: URI::MailTo::EMAIL_REGEXP
     }.freeze
 
     class << self

@@ -3,7 +3,7 @@ module LightServiceExt
     FakeApplicationAction = Class.new(described_class) do
       executed do |context|
         value = context.dig(:input, :callback).call
-        add_params(context, :value => value)
+        add_params(context, value: value)
       end
     end
 
@@ -17,12 +17,12 @@ module LightServiceExt
 
     let(:value) { 'some-value' }
     let(:callback) { -> { value } }
-    let(:input) { { :callback => callback } }
+    let(:input) { { callback: callback } }
     let(:ctx) do
       LightService::Testing::ContextFactory
         .make_from(organizer_class)
         .for(FakeApplicationAction)
-        .with(:callback => callback)
+        .with(callback: callback)
     end
 
     subject(:context) do
@@ -32,7 +32,7 @@ module LightServiceExt
     it 'adds value returned by callback to params' do
       expect(context.keys).to include(:input, :errors, :params)
 
-      expect(context[:params]).to eql({ :value => value })
+      expect(context[:params]).to eql({ value: value })
     end
   end
 end

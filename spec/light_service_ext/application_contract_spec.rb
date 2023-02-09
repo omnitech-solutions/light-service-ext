@@ -19,7 +19,7 @@ module LightServiceExt
     describe '.register_macro' do
       describe ':email' do
         let(:email) { nil }
-        let(:params) { { :email => email } }
+        let(:params) { { email: email } }
 
         subject(:result) { contract_class.new.call(params) }
 

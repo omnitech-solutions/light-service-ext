@@ -2,7 +2,7 @@ module LightServiceExt
   class ApplicationContext < LightService::Context
     class << self
       def make_with_defaults(ctx)
-        make({ :input => ctx, :errors => {}, :params => {} })
+        make({ input: ctx, errors: {}, params: {} })
       end
     end
 

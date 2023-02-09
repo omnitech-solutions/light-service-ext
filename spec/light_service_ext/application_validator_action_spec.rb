@@ -9,7 +9,7 @@ module LightServiceExt
     end
 
     let(:value) { 'some-value' }
-    let(:input) { { :key => value } }
+    let(:input) { { key: value } }
     let(:ctx) { ApplicationContext.make_with_defaults(input) }
 
     subject(:context) { action_class.execute(ctx) }
@@ -27,7 +27,7 @@ module LightServiceExt
 
       it 'returns promised params and filled in errors' do
         expect(context).to be_failure
-        expect(context.errors).to eql(:key => 'must be filled')
+        expect(context.errors).to eql(key: 'must be filled')
       end
     end
   end

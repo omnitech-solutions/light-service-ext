@@ -1,4 +1,6 @@
 RSpec.describe LightServiceExt::ErrorInfo do
+  subject(:instance) { error_info_class.new(error, ctx: ctx, message: message_override, fatal: fatal) }
+
   let(:value) { 'some-value' }
   let(:ctx) { { key: value } }
   let(:message_override) { nil }
@@ -8,9 +10,7 @@ RSpec.describe LightServiceExt::ErrorInfo do
   let(:error) { StandardError.new(message) }
   let(:error_info_class) { Class.new(described_class) }
 
-  subject(:instance) { error_info_class.new(error, ctx: ctx, message: message_override, fatal: fatal) }
-
-  before(:each) do
+  before do
     error.set_backtrace(backtrace)
   end
 
@@ -48,42 +48,42 @@ RSpec.describe LightServiceExt::ErrorInfo do
 
   describe '#fatal_error?' do
     it 'returns true' do
-      expect(instance.fatal_error?).to be_truthy
+      expect(instance).to be_fatal_error
     end
 
     context 'with non fatal error' do
       let(:error) { ArgumentError.new(message) }
 
-      before(:each) { error_info_class.non_fatal_errors = [ArgumentError] }
+      before { error_info_class.non_fatal_errors = [ArgumentError] }
 
       context 'with fatal passed as arg' do
         let(:fatal) { true }
 
         it 'returns true' do
-          expect(instance.fatal_error?).to be_truthy
+          expect(instance).to be_fatal_error
         end
       end
 
       it 'returns false' do
-        expect(instance.fatal_error?).to be_falsey
+        expect(instance).not_to be_fatal_error
       end
     end
   end
 
   describe '#error_summary' do
     it 'returns summary of error' do
-      expect(instance.error_summary).to eql(<<-TEXT
-=========== SERVER ERROR FOUND: StandardError : some-error ===========
+      expect(instance.error_summary).to eql(<<~TEXT
+        =========== SERVER ERROR FOUND: StandardError : some-error ===========
 
-some-backtrace-item
-========================================================
+        some-backtrace-item
+        ========================================================
 
-FULL STACK TRACE
-some-backtrace-item
+        FULL STACK TRACE
+        some-backtrace-item
 
-========================================================
-TEXT
-)
+        ========================================================
+      TEXT
+                                           )
     end
   end
 end

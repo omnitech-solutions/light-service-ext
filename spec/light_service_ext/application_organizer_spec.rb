@@ -22,7 +22,7 @@ module LightServiceExt
       end
     end
 
-    let(:input) { { :some_proc => proc {} } }
+    let(:input) { { some_proc: proc {} } }
 
     it 'adds inputted data as input key value pair' do
       ctx = subject_class.call(input)
@@ -33,7 +33,7 @@ module LightServiceExt
 
     it 'calls underlying action' do
       expect do
-        subject_class.call(:some_proc => proc { raise 'error' })
+        subject_class.call(some_proc: proc { raise 'error' })
       end.to raise_error RuntimeError, 'error'
     end
   end

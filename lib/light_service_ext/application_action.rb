@@ -25,7 +25,7 @@ module LightServiceExt
 
     module AroundMethodExtension
       def execute(context)
-        result = super(context.merge(:invoked_action => self))
+        result = super(context.merge(invoked_action: self))
 
         context.merge!(result)
         context.fail! if result[:errors].present?

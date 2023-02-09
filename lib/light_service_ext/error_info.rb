@@ -40,23 +40,21 @@ module LightServiceExt
         backtrace: clean_backtrace[0, 3]&.join("\n"),
         ctx: ctx&.to_h,
         error: exception,
-        fatal_error?: fatal_error?
+        fatal_error: fatal_error?
       }
     end
 
     def clean_backtrace
-      @clean_backtrace ||= begin
-                             return error.backtrace || [] unless defined? Rails
-
+      @clean_backtrace ||= if defined? Rails
                              Rails.backtrace_cleaner.clean(error.backtrace || [])
+                           else
+                             error.backtrace || []
                            end
     end
 
     def non_fatal_error?
       self.class.non_fatal_errors.map(&:to_s).include?(type)
     end
-
-    private
 
     class << self
       attr_writer :non_fatal_errors
