@@ -2,7 +2,8 @@ module LightServiceExt
   class ApplicationContext < LightService::Context
     class << self
       def make_with_defaults(ctx)
-        make({ input: ctx, errors: {}, params: {} })
+        make({ input: ctx.symbolize_keys, errors: {}, params: {}, successful_actions: [], api_responses: [],
+               raise_on_failure: true })
       end
     end
 

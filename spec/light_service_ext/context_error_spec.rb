@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module LightServiceExt
   RSpec.describe ContextError do
     let(:value) { 'some-value' }
@@ -26,13 +27,13 @@ module LightServiceExt
       subject(:error_info_message) { instance.error_info.message }
 
       it 'sets default organizer message' do
-        expect(error_info_message).to include(<<-TEXT.strip
-Organizer completed with unhandled errors: 
-{
-  "param_key": "some-key-error"
-}
-TEXT
-)
+        expect(error_info_message).to include(<<~TEXT.strip
+          Organizer completed with unhandled errors:#{' '}
+          {
+            "param_key": "some-key-error"
+          }
+        TEXT
+                                             )
       end
 
       context 'with custom message' do
@@ -51,14 +52,14 @@ TEXT
         let(:error) { nil }
 
         it 'returns error message' do
-          expect(context_error_message).to eql(<<-TEXT.strip
-Organizer: ApplicationOrganizer
-  Action: ApplicationAction failed with errors:
-  Validation Errors: {
-  "param_key": "some-key-error"
-}
-TEXT
-)
+          expect(context_error_message).to eql(<<~TEXT.strip
+            Organizer: ApplicationOrganizer
+              Action: ApplicationAction failed with errors:
+              Validation Errors: {
+              "param_key": "some-key-error"
+            }
+          TEXT
+                                              )
         end
       end
 
@@ -77,7 +78,7 @@ TEXT
 
           ========================================================
         TEXT
-                                                )
+                                            )
       end
 
       it 'includes organizer class name' do
@@ -129,3 +130,4 @@ TEXT
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

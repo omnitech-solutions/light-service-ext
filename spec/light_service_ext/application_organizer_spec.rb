@@ -27,7 +27,8 @@ module LightServiceExt
     it 'adds inputted data as input key value pair' do
       ctx = subject_class.call(input)
 
-      expect(ctx.keys).to match_array(%i[errors input params])
+      expect(ctx.keys).to match_array(%i[api_responses errors input params raise_on_failure
+                                         successful_actions])
       expect(ctx[:input]).to eql(input)
     end
 

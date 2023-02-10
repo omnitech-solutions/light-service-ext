@@ -8,7 +8,8 @@ module LightServiceExt
     alias organizer organized_by
     alias action invoked_action
 
-    def initialize(error: nil, ctx:, message: nil, fatal: false)
+    def initialize(ctx:, error: nil, message: nil, fatal: false)
+      super
       @error = error
       @context = ctx
       message = message.presence || "Organizer completed with unhandled errors: \n#{formatted_validation_errors}"
