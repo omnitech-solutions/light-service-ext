@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.files = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^exe/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(spec|features)/})
-  gem.name = "light_service_ext"
+  gem.name = "light-service-ext"
   gem.require_paths = ["lib"]
   gem.version = LightServiceExt::VERSION
   gem.required_ruby_version = ">= 2.6.0"
