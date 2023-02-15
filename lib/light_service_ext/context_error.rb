@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LightServiceExt
   class ContextError < StandardError
     attr_reader :error_info, :context, :error

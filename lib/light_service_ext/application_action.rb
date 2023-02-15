@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LightServiceExt
   class ApplicationAction
     extend LightService::Action

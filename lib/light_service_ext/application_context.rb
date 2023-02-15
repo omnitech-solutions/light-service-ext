@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LightServiceExt
   class ApplicationContext < LightService::Context
     OVERRIDABLE_DEFAULT_KEYS = %i[errors params allow_raise_on_failure].freeze

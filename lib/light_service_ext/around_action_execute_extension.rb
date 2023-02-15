@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LightServiceExt
   module AroundActionExecuteExtension
     def execute(context)
