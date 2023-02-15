@@ -23,18 +23,8 @@ module LightServiceExt
       end
     end
 
-    module AroundMethodExtension
-      def execute(context)
-        result = super(context.merge(invoked_action: self))
-
-        context.merge!(result)
-        context.fail! if result[:errors].present?
-        result
-      end
-    end
-
     def self.inherited(base)
-      base.singleton_class.prepend AroundMethodExtension
+      base.singleton_class.prepend AroundActionExecuteExtension
       super
     end
   end
