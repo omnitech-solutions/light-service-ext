@@ -5,7 +5,7 @@ require File.join(__dir__, "..", 'dev', 'setup')
 require 'coverage_helper'
 require 'light-service/testing'
 
-require "light_service_ext"
+require "light-service-ext"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

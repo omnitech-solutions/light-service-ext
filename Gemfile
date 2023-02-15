@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in light_service_ext.gemspec
+# Specify your gem's dependencies in light-service-ext.gemspec
 gemspec
 
 gem "rubocop", "~> 1.44.1"

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/light_service_ext/version"
+require_relative "lib/light-service-ext/version"
 
 Gem::Specification.new do |gem|
   gem.authors = ["Desmond O'Leary"]
