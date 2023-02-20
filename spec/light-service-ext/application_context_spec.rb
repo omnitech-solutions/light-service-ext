@@ -1,5 +1,66 @@
 module LightServiceExt
   RSpec.describe ApplicationContext do
+    let(:input) { { key: 'some-value' } }
+    let(:key) { :key }
+    let(:value) { 'some-value' }
+    subject(:ctx) { described_class.make_with_defaults(input) }
+
+    describe '#add_errors!' do
+      before(:each) { allow(ctx).to receive(:fail_and_return!) }
+
+      it 'fails the context' do
+        ctx.add_errors!(key => value)
+
+        expect(ctx).to have_received(:fail_and_return!)
+      end
+
+      it 'adds errors to context' do
+        ctx.add_errors!(key => value)
+
+        expect(ctx.errors).to eql(key => value)
+      end
+
+      it 'updates older values' do
+        ctx.add_errors!(key => value)
+
+        ctx.add_errors!(key => 'other-value')
+
+        expect(ctx.errors).to eql(key => 'other-value')
+      end
+
+      it 'preserves other keys' do
+        ctx.add_errors!(key => value)
+
+        ctx.add_errors!(other_key: 'other-value')
+
+        expect(ctx.errors).to include(key => value, other_key: 'other-value')
+      end
+    end
+
+    describe '#add_params' do
+      it 'adds params to context' do
+        ctx.add_params(key => value)
+
+        expect(ctx.params).to eql(key => value)
+      end
+
+      it 'updates older values' do
+        ctx.add_params(key => value)
+
+        ctx.add_params(key => 'other-value')
+
+        expect(ctx.params).to eql(key => 'other-value')
+      end
+
+      it 'preserves other keys' do
+        ctx.add_params(key => value)
+
+        ctx.add_params(other_key: 'other-value')
+
+        expect(ctx.params).to include(key => value, other_key: 'other-value')
+      end
+    end
+
     describe '.make_with_defaults' do
       let(:input) { { key: 'some-value' } }
       let(:overrides) { {} }

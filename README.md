@@ -55,6 +55,17 @@ LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
 #    }
 ````
 
+#### Useful methods
+
+- `.add_params(**params)`
+  - Adds given args to context's `params` field
+  - e.g. `add_params(user_id: 1) # => { params: { user_id: 1 } }`
+- `.add_errors(**errors)`
+  - Adds given args to to context's `errors` field
+  - Fails and returns from current action/organizer's context
+  - e.g. `add_to_errors(email: 'not found') # => { errors: { email: 'not found' } }`
+
+
 ## ApplicationOrganizer
 
 > Adds the following support
@@ -136,14 +147,7 @@ end
 ### ApplicationAction
 
 #### Useful methods
-
-- `.add_params(context, **args)`
-  - Adds given args to context's `params` field
-  - e.g. `add_params(context, user_id: 1) # => { params: { user_id: 1 } }`
-- `.add_errors(context, **args)`
-  - Adds given args to to context's `errors` field
-  - Fails and returns from current action/organizer's context
-  - e.g. `add_to_errors(context, email: 'not found') # => { errors: { email: 'not found' } }`
+- TODO
 
 #### Invoked Action
 - *NOTE* Action's `executed` block gets called by the underlying `LightService::Action`

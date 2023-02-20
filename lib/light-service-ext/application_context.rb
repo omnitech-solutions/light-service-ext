@@ -17,6 +17,19 @@ module LightServiceExt
       end
     end
 
+    def add_params(**params)
+      return if params.blank?
+
+      self[:params].merge!(params.dup)
+    end
+
+    def add_errors!(**errors)
+      return if errors.blank?
+
+      self[:errors].merge!(errors.dup)
+      fail_and_return!
+    end
+
     def invoked_action
       self[:invoked_action]
     end
