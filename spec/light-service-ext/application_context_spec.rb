@@ -37,6 +37,38 @@ module LightServiceExt
       end
     end
 
+    describe '#add_errors' do
+      before(:each) { allow(ctx).to receive(:fail_and_return!) }
+
+      it 'does not fail the context' do
+        ctx.add_errors(key => value)
+
+        expect(ctx).to_not have_received(:fail_and_return!)
+      end
+
+      it 'adds errors to context' do
+        ctx.add_errors(key => value)
+
+        expect(ctx.errors).to eql(key => value)
+      end
+
+      it 'updates older values' do
+        ctx.add_errors(key => value)
+
+        ctx.add_errors(key => 'other-value')
+
+        expect(ctx.errors).to eql(key => 'other-value')
+      end
+
+      it 'preserves other keys' do
+        ctx.add_errors(key => value)
+
+        ctx.add_errors(other_key: 'other-value')
+
+        expect(ctx.errors).to include(key => value, other_key: 'other-value')
+      end
+    end
+
     describe '#add_params' do
       it 'adds params to context' do
         ctx.add_params(key => value)

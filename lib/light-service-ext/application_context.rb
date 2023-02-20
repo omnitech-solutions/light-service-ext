@@ -23,10 +23,17 @@ module LightServiceExt
       self[:params].merge!(params.dup)
     end
 
-    def add_errors!(**errors)
+    def add_errors(**errors)
       return if errors.blank?
 
       self[:errors].merge!(errors.dup)
+      nil
+    end
+
+    def add_errors!(**errors)
+      return if errors.blank?
+
+      add_errors(**errors)
       fail_and_return!
     end
 
