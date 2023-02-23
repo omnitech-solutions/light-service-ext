@@ -4,7 +4,7 @@ RSpec.describe LightServiceExt::ErrorInfo do
   let(:value) { 'some-value' }
   let(:message_override) { nil }
   let(:message) { 'some-error' }
-  let(:fatal) { nil }
+  let(:fatal) { false }
   let(:backtrace) { ['some-backtrace-item'] }
   let(:error) { StandardError.new(message) }
   let(:error_info_class) { Class.new(described_class) }
@@ -53,8 +53,6 @@ RSpec.describe LightServiceExt::ErrorInfo do
     context 'with non fatal error' do
       let(:error) { ArgumentError.new(message) }
 
-      before { error_info_class.non_fatal_errors = [ArgumentError] }
-
       context 'with fatal passed as arg' do
         let(:fatal) { true }
 
@@ -63,8 +61,20 @@ RSpec.describe LightServiceExt::ErrorInfo do
         end
       end
 
-      it 'returns false' do
-        expect(instance.fatal_error?).to be_falsey
+      context 'with error set as non fatal' do
+        before { LightServiceExt.configure { |c| c.non_fatal_error_classes = [ArgumentError] } }
+
+        it 'returns false' do
+          expect(instance.fatal_error?).to be_falsey
+        end
+
+        context 'with fatal passed as arg' do
+          let(:fatal) { true }
+
+          it 'returns true' do
+            expect(instance.fatal_error?).to be_truthy
+          end
+        end
       end
     end
   end
@@ -72,12 +82,12 @@ RSpec.describe LightServiceExt::ErrorInfo do
   describe '#error_summary' do
     it 'returns summary of error' do
       expect(instance.error_summary).to eql(<<~TEXT
-        =========== SERVER ERROR FOUND: StandardError : some-error ===========
+=========== SERVER ERROR FOUND: StandardError : some-error ===========
 
-        FULL STACK TRACE
-        some-backtrace-item
+FULL STACK TRACE
+some-backtrace-item
 
-        ========================================================
+========================================================
       TEXT
                                            )
     end
@@ -100,7 +110,7 @@ RSpec.describe LightServiceExt::ErrorInfo do
     context 'with non fatal error' do
       let(:error) { ArgumentError.new(message) }
 
-      before { error_info_class.non_fatal_errors = [ArgumentError] }
+      before { LightServiceExt.configure { |c| c.non_fatal_error_classes = [ArgumentError] } }
 
       it 'returns non fatal error' do
         expect(hash[:fatal_error?]).to be_falsey

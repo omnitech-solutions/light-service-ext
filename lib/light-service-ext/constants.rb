@@ -2,6 +2,6 @@
 
 module LightServiceExt
   module Outcome
-    COMPLETE = "all_steps_complete"
+    COMPLETE = :all_steps_complete
   end
 end

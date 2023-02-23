@@ -8,6 +8,10 @@ require 'light-service/testing'
 require "light-service-ext"
 
 RSpec.configure do |config|
+  config.before(:each) do
+    LightServiceExt.class_variable_set(:@@configuration, LightServiceExt::Configuration.new)
+  end
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 

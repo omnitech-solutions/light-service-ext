@@ -6,7 +6,7 @@ require 'json'
 require 'light-service'
 require 'dry-validation'
 
-Dir.glob("lib/**/*.rb").each do |f|
-  require File.join(__dir__, '..', f)
-end
+require 'active_support/core_ext/array'
+require 'active_support/configurable'
 
+require File.expand_path("../../lib/light-service-ext", Pathname.new(__FILE__).realpath)

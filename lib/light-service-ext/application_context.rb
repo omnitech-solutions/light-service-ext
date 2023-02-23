@@ -13,7 +13,7 @@ module LightServiceExt
       private
 
       def default_attrs
-        { errors: {}, params: {}, successful_actions: [], api_responses: [], allow_raise_on_failure: true }.freeze
+        { errors: {}, params: {}, successful_actions: [], api_responses: [], allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure? }.freeze
       end
     end
 

@@ -53,15 +53,7 @@ module LightServiceExt
     end
 
     def non_fatal_error?
-      error.nil? || self.class.non_fatal_errors.map(&:to_s).include?(type)
-    end
-
-    class << self
-      attr_writer :non_fatal_errors
-
-      def non_fatal_errors
-        @non_fatal_errors ||= []
-      end
+      error.nil? || LightServiceExt.config.non_fatal_error?(error)
     end
   end
 end

@@ -26,6 +26,10 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'dry-struct', '~> 1.6'
   gem.add_runtime_dependency 'dry-validation', '~> 1.10'
   gem.add_runtime_dependency 'json', '~> 2.6', '>= 2.6.3'
+  gem.add_runtime_dependency 'rails', '>= 6'
+  # gem.add_runtime_dependency 'railties', '>= 6'
+  gem.add_runtime_dependency 'activesupport', '>= 6'
+  gem.add_runtime_dependency 'activerecord', '>= 6'
 
   gem.add_development_dependency("rake", "~> 13.0.6")
   gem.add_development_dependency("rspec", "~> 3.12.0")
