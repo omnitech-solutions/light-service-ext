@@ -242,3 +242,6 @@ RSpec/FilePath:
 
 RSpec/SubjectStub:
   Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false

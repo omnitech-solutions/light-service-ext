@@ -23,7 +23,7 @@ module LightServiceExt
       it 'does not raise error' do
         expect { executed_ctx }.not_to raise_error
 
-        expect(executed_ctx.keys).to include(:outcome)
+        expect(executed_ctx.keys).to include(:status)
       end
 
       context 'with raising of errors allowed' do

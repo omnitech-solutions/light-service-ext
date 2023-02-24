@@ -7,6 +7,102 @@ module LightServiceExt
 
     subject(:ctx) { described_class.make_with_defaults(input) }
 
+    describe '#add_to_successful_actions' do
+      it 'adds successful action name to context' do
+        ctx.add_to_successful_actions(value)
+
+        expect(ctx.successful_actions).to match_array([value])
+      end
+
+      it 'preserves other successful action name' do
+        ctx.add_to_successful_actions(value)
+
+        ctx.add_to_successful_actions('other-value')
+
+        expect(ctx.successful_actions).to match_array([value, 'other-value'])
+      end
+    end
+
+    describe '#add_to_api_responses' do
+      it 'adds last api response to context' do
+        ctx.add_to_api_responses(value)
+
+        expect(ctx.api_responses).to match_array([value])
+      end
+
+      it 'preserves other api responses' do
+        ctx.add_to_api_responses(value)
+
+        ctx.add_to_api_responses('other-value')
+
+        expect(ctx.api_responses).to match_array([value, 'other-value'])
+      end
+    end
+
+    describe '#add_last_failed_context' do
+      it 'adds last failed context' do
+        ctx.add_last_failed_context(value)
+
+        expect(ctx.last_failed_context).to eql(value)
+      end
+
+      it 'updates older values' do
+        ctx.add_last_failed_context(value)
+
+        ctx.add_last_failed_context('other-value')
+
+        expect(ctx.last_failed_context).to eql('other-value')
+      end
+    end
+
+    describe '#add_status' do
+      it 'adds current api response to context' do
+        ctx.add_status(value)
+
+        expect(ctx.status).to eql(value)
+      end
+
+      it 'updates older values' do
+        ctx.add_status(value)
+
+        ctx.add_status('other-value')
+
+        expect(ctx.status).to eql('other-value')
+      end
+    end
+
+    describe '#add_current_api_response' do
+      it 'adds current api response to context' do
+        ctx.add_current_api_response(value)
+
+        expect(ctx.current_api_response).to eql(value)
+      end
+
+      it 'updates older values' do
+        ctx.add_current_api_response(value)
+
+        ctx.add_current_api_response('other-value')
+
+        expect(ctx.current_api_response).to eql('other-value')
+      end
+    end
+
+    describe '#add_invoked_action' do
+      it 'adds last api response to context' do
+        ctx.add_invoked_action(value)
+
+        expect(ctx.invoked_action).to eql(value)
+      end
+
+      it 'updates older values' do
+        ctx.add_invoked_action(value)
+
+        ctx.add_invoked_action('other-value')
+
+        expect(ctx.invoked_action).to eql('other-value')
+      end
+    end
+
     describe '#add_errors!' do
       before { allow(ctx).to receive(:fail_and_return!) }
 
@@ -134,13 +230,19 @@ module LightServiceExt
       end
 
       it 'returns context with default attrs' do
-        expect(ctx_with_defaults.keys).to match_array(%i[input
-                                                         errors
-                                                         params
-                                                         successful_actions
-                                                         api_responses
-                                                         allow_raise_on_failure
-                                                         internal_only])
+        expect(ctx_with_defaults.keys).to match_array(%i[
+                                                        input
+                                                        params
+                                                        errors
+                                                        status
+                                                        successful_actions
+                                                        allow_raise_on_failure
+                                                        api_responses
+                                                        internal_only
+                                                        invoked_action
+                                                        last_api_response
+                                                        last_failed_context
+                                                      ])
 
         expect(ctx_with_defaults[:input]).to eql(input)
       end
@@ -160,8 +262,8 @@ module LightServiceExt
             described_class.make_with_defaults(input, successful_actions: ['some-action-class-name'])
           end
 
-          it 'prevents successful_actions to change from default' do
-            expect(ctx_with_defaults[:successful_actions]).to be_empty
+          it 'allows for overrides' do
+            expect(ctx_with_defaults[:successful_actions]).to match_array(['some-action-class-name'])
           end
         end
 
@@ -170,8 +272,8 @@ module LightServiceExt
             described_class.make_with_defaults(input, api_responses: ['some-api-response'])
           end
 
-          it 'prevents successful_actions to change from default' do
-            expect(ctx_with_defaults[:api_responses]).to be_empty
+          it 'allows for overrides' do
+            expect(ctx_with_defaults[:api_responses]).to match_array(['some-api-response'])
           end
         end
 

@@ -9,7 +9,7 @@ module LightServiceExt
 
       raise ContextError.new(ctx: context) if raise_error
 
-      context[:outcome] = Outcome::COMPLETE
+      context.add_status(Status::COMPLETE)
     end
   end
 end

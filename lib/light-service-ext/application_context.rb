@@ -2,40 +2,38 @@
 
 module LightServiceExt
   class ApplicationContext < LightService::Context
-    OVERRIDABLE_DEFAULT_KEYS = %i[errors params allow_raise_on_failure].freeze
-
     class << self
       def make_with_defaults(input = {}, overrides = {})
-        allowed_overrides = overrides.slice(*OVERRIDABLE_DEFAULT_KEYS)
-        make({ input: input.symbolize_keys }.merge(default_attrs, allowed_overrides))
+        defaults = default_attrs
+        allowed_override_keys = defaults.keys.excluding(:input)
+        allowed_overrides = overrides.slice(*allowed_override_keys)
+        make({ input: input.symbolize_keys }.merge(defaults, allowed_overrides))
       end
 
       private
 
       def default_attrs
-        { errors: {}, params: {}, successful_actions: [], api_responses: [],
+        {
+          errors: {},
+          params: {},
+          status: Status::INCOMPLETE,
+          invoked_action: nil,
+          successful_actions: [],
+          last_api_response: nil,
+          api_responses: [],
+          last_failed_context: nil,
           allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure?,
-          internal_only: { error_info: nil } }.freeze
+          internal_only: { error_info: nil }
+        }.freeze
       end
     end
 
     def add_params(**params)
-      return if params.blank?
-
-      self[:params].merge!(params.dup)
-    end
-
-    def add_internal_only(**attrs)
-      return if attrs.blank?
-
-      self[:internal_only].merge!(attrs.dup)
+      add_attrs_to_ctx(:params, params)
     end
 
     def add_errors(**errors)
-      return if errors.blank?
-
-      self[:errors].merge!(errors.dup)
-      nil
+      add_attrs_to_ctx(:errors, errors)
     end
 
     def add_errors!(**errors)
@@ -45,12 +43,34 @@ module LightServiceExt
       fail_and_return!
     end
 
-    def invoked_action
-      self[:invoked_action]
+    def add_status(status)
+      add_value_to_ctx(:status, status)
     end
 
-    def validation_errors
-      self[:errors]
+    def add_internal_only(**attrs)
+      add_attrs_to_ctx(:internal_only, **attrs)
+    end
+
+    def add_current_api_response(api_response)
+      add_value_to_ctx(:current_api_response, api_response)
+    end
+
+    def add_last_failed_context(failed_context)
+      return if failed_context.nil? || failed_context.try(:success?)
+
+      add_value_to_ctx(:last_failed_context, failed_context)
+    end
+
+    def add_to_api_responses(*api_response)
+      add_collection_to_ctx(:api_responses, *api_response)
+    end
+
+    def add_to_successful_actions(*action_name)
+      add_collection_to_ctx(:successful_actions, *action_name)
+    end
+
+    def add_invoked_action(invoked_action)
+      add_value_to_ctx(:invoked_action, invoked_action)
     end
 
     def allow_raise_on_failure?
@@ -65,6 +85,27 @@ module LightServiceExt
 
     def respond_to_missing?(method_name, include_private = false)
       key?(method_name) || super
+    end
+
+    private
+
+    def add_value_to_ctx(key, value)
+      self[key] = value
+      nil
+    end
+
+    def add_attrs_to_ctx(key, **attrs)
+      return if attrs.blank?
+
+      self[key].merge!(attrs)
+      nil
+    end
+
+    def add_collection_to_ctx(key, *values)
+      return if values.empty?
+
+      self[key] = self[key].concat(values).compact
+      nil
     end
   end
 end

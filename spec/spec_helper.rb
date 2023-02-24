@@ -5,6 +5,19 @@ require Pathname.new(__dir__).realpath.join('coverage_helper').to_s
 
 require 'light-service/testing'
 
+unless defined? Rails
+  module Rails
+  end
+end
+
+unless defined? Rails::ActiveRecordError
+  module Rails
+    class ActiveRecordError < StandardError
+      def model; end
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.before do
     # rubocop:disable Style/ClassVars

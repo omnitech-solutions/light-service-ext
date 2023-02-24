@@ -1,33 +1,13 @@
 module LightServiceExt
   RSpec.describe WithErrorHandler do
-    unless defined? Rails
-      module Rails
-      end
-    end
-
-    unless defined? Rails::ActiveRecordError
-      module Rails
-        class ActiveRecordError < StandardError
-          def model; end
-        end
-      end
-    end
-
     let(:implementor_class) do
       Class.new do
         extend WithErrorHandler
       end
     end
 
-    let(:key) { :key }
-    let(:key_error) { 'invalid' }
-    let(:messages) { { key => [key_error] } }
     let(:error_message) { 'some-error' }
-    let(:errors) { OpenStruct.new(messages: messages) }
-    let(:model) { OpenStruct.new(errors: errors) }
-    let(:results_ctx_proc) { -> { ApplicationContext.make_with_defaults } }
     let(:ctx) { ApplicationContext.make_with_defaults }
-    let(:error) { Rails::ActiveRecordError.new(error_message) }
 
     before { allow(LightServiceExt.config.logger).to receive(:error) }
 
@@ -36,7 +16,23 @@ module LightServiceExt
         implementor_class.with_error_handler(ctx: ctx, &results_ctx_proc)
       end
 
+      context 'with non validation error' do
+        let(:error) { ArgumentError.new(error_message) }
+        let(:results_ctx_proc) { -> { raise error } }
+
+        it 'logs errors' do
+          expect { errors_handled_ctx }.to raise_error ArgumentError, error_message
+          expect(LightServiceExt.config.logger).to have_received(:error)
+        end
+      end
+
       context 'with active record error' do
+        let(:key) { :key }
+        let(:key_error) { 'invalid' }
+        let(:messages) { { key => [key_error] } }
+        let(:error) { Rails::ActiveRecordError.new(error_message) }
+        let(:errors) { double(:errors, messages: messages) }
+        let(:model) { double(:model, errors: errors) }
         let(:results_ctx_proc) { -> { raise error } }
 
         context 'with error including model' do

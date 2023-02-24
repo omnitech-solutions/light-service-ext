@@ -8,6 +8,7 @@ error_info
 context_error
 configuration
 with_error_handler
+record_actions
 application_context
 application_contract
 around_action_execute_extension
