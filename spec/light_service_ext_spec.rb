@@ -6,14 +6,19 @@ RSpec.describe LightServiceExt do
   end
 
   describe '.configure' do
-    let(:error_class) { ArgumentError }
-    let(:default_error_class) { EncodingError }
     subject(:config) { described_class.configuration }
 
-    after(:each) { described_class.class_variable_set(:@@configuration, described_class::Configuration.new) }
+    let(:error_class) { ArgumentError }
+    let(:default_error_class) { EncodingError }
+
+    after do
+      # rubocop:disable Style/ClassVars
+      described_class.class_variable_set(:@@configuration, described_class::Configuration.new)
+      # rubocop:enable Style/ClassVars
+    end
 
     context 'with non fatal error classes' do
-      before(:each) do
+      before do
         described_class.configure do |config|
           config.non_fatal_error_classes = [error_class]
         end
@@ -27,7 +32,7 @@ RSpec.describe LightServiceExt do
     end
 
     context 'with default non fatal errors' do
-      before(:each) do
+      before do
         described_class.configure do |config|
           config.default_non_fatal_error_classes = [default_error_class]
         end
@@ -41,7 +46,7 @@ RSpec.describe LightServiceExt do
     end
 
     context 'with default and non default non fatal errors' do
-      before(:each) do
+      before do
         described_class.configure do |config|
           config.non_fatal_error_classes = [error_class, default_error_class, nil]
           config.default_non_fatal_error_classes = [default_error_class]

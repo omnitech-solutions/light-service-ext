@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require File.join(__dir__, "..", 'dev', 'setup')
+require Pathname.new(__dir__).realpath.join('coverage_helper').to_s
 
-require 'coverage_helper'
 require 'light-service/testing'
 
-require "light-service-ext"
-
 RSpec.configure do |config|
-  config.before(:each) do
+  config.before do
+    # rubocop:disable Style/ClassVars
     LightServiceExt.class_variable_set(:@@configuration, LightServiceExt::Configuration.new)
+    # rubocop:enable Style/ClassVars
   end
 
   # Enable flags like --only-failures and --next-failure

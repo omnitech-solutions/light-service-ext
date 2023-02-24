@@ -2,11 +2,12 @@ module LightServiceExt
   RSpec.describe Configuration do
     let(:error_class) { ArgumentError }
     let(:default_error_class) { EncodingError }
+
     subject(:config) { described_class.new }
 
     describe '#new' do
       context 'with non fatal error classes' do
-        before(:each) do
+        before do
           config.non_fatal_error_classes = [error_class]
         end
 
@@ -18,7 +19,7 @@ module LightServiceExt
       end
 
       context 'with default non fatal errors' do
-        before(:each) do
+        before do
           described_class.configure do |config|
             config.default_non_fatal_error_classes = [default_error_class]
           end
@@ -32,7 +33,7 @@ module LightServiceExt
       end
 
       context 'with default and non default non fatal errors' do
-        before(:each) do
+        before do
           described_class.configure do |config|
             config.non_fatal_error_classes = [error_class, default_error_class, nil]
             config.default_non_fatal_error_classes = [default_error_class]

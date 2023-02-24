@@ -236,3 +236,9 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/PredicateMatcher:
   Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/SubjectStub:
+  Enabled: false

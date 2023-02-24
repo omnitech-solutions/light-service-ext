@@ -82,12 +82,12 @@ RSpec.describe LightServiceExt::ErrorInfo do
   describe '#error_summary' do
     it 'returns summary of error' do
       expect(instance.error_summary).to eql(<<~TEXT
-=========== SERVER ERROR FOUND: StandardError : some-error ===========
+        =========== SERVER ERROR FOUND: StandardError : some-error ===========
 
-FULL STACK TRACE
-some-backtrace-item
+        FULL STACK TRACE
+        some-backtrace-item
 
-========================================================
+        ========================================================
       TEXT
                                            )
     end
@@ -97,7 +97,7 @@ some-backtrace-item
     subject(:hash) { instance.to_h }
 
     it 'returns custom key value pairs' do
-      expect(hash.keys).to match_array(%i[type message exception backtrace error fatal_error?])
+      expect(hash.keys).to match_array(%i[type message exception backtrace error errors fatal_error?])
 
       expect(hash[:type]).to eql(error.class.name)
       expect(hash[:message]).to eql(message)
@@ -105,6 +105,7 @@ some-backtrace-item
       expect(hash[:backtrace]).to eql(backtrace.join)
       expect(hash[:error]).to eql(error)
       expect(hash[:fatal_error?]).to be_truthy
+      expect(hash[:errors]).to eql({ base: "some-error" })
     end
 
     context 'with non fatal error' do

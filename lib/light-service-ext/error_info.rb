@@ -29,6 +29,13 @@ module LightServiceExt
       TEXT
     end
 
+    def errors
+      model = error && (error.try(:model) || error.try(:record))
+      return model.errors.messages.transform_values(&:first) if model.present?
+
+      { base: message }
+    end
+
     def to_h
       {
         type: type,
@@ -36,7 +43,8 @@ module LightServiceExt
         exception: title,
         backtrace: clean_backtrace[0, 3]&.join("\n"),
         error: error,
-        fatal_error?: fatal_error?
+        fatal_error?: fatal_error?,
+        errors: errors
       }
     end
 
@@ -45,7 +53,7 @@ module LightServiceExt
     end
 
     def clean_backtrace
-      @clean_backtrace ||= if defined? Rails
+      @clean_backtrace ||= if defined? Rails.backtrace_cleaner
                              Rails.backtrace_cleaner.clean(backtrace || [])
                            else
                              backtrace || []

@@ -1,12 +1,14 @@
+# rubocop:disable Metrics/ModuleLength
 module LightServiceExt
   RSpec.describe ApplicationContext do
     let(:input) { { key: 'some-value' } }
     let(:key) { :key }
     let(:value) { 'some-value' }
+
     subject(:ctx) { described_class.make_with_defaults(input) }
 
     describe '#add_errors!' do
-      before(:each) { allow(ctx).to receive(:fail_and_return!) }
+      before { allow(ctx).to receive(:fail_and_return!) }
 
       it 'fails the context' do
         ctx.add_errors!(key => value)
@@ -33,17 +35,17 @@ module LightServiceExt
 
         ctx.add_errors!(other_key: 'other-value')
 
-        expect(ctx.errors).to include(key => value, other_key: 'other-value')
+        expect(ctx.errors).to include(key => value, :other_key => 'other-value')
       end
     end
 
     describe '#add_errors' do
-      before(:each) { allow(ctx).to receive(:fail_and_return!) }
+      before { allow(ctx).to receive(:fail_and_return!) }
 
       it 'does not fail the context' do
         ctx.add_errors(key => value)
 
-        expect(ctx).to_not have_received(:fail_and_return!)
+        expect(ctx).not_to have_received(:fail_and_return!)
       end
 
       it 'adds errors to context' do
@@ -65,7 +67,7 @@ module LightServiceExt
 
         ctx.add_errors(other_key: 'other-value')
 
-        expect(ctx.errors).to include(key => value, other_key: 'other-value')
+        expect(ctx.errors).to include(key => value, :other_key => 'other-value')
       end
     end
 
@@ -89,7 +91,31 @@ module LightServiceExt
 
         ctx.add_params(other_key: 'other-value')
 
-        expect(ctx.params).to include(key => value, other_key: 'other-value')
+        expect(ctx.params).to include(key => value, :other_key => 'other-value')
+      end
+    end
+
+    describe '#add_internal_only' do
+      it 'adds params to context' do
+        ctx.add_internal_only(key => value)
+
+        expect(ctx.internal_only).to include(key => value)
+      end
+
+      it 'updates older values' do
+        ctx.add_internal_only(key => value)
+
+        ctx.add_internal_only(key => 'other-value')
+
+        expect(ctx.internal_only).to include(key => 'other-value')
+      end
+
+      it 'preserves other keys' do
+        ctx.add_internal_only(key => value)
+
+        ctx.add_internal_only(other_key: 'other-value')
+
+        expect(ctx.internal_only).to include(key => value, :other_key => 'other-value')
       end
     end
 
@@ -113,7 +139,8 @@ module LightServiceExt
                                                          params
                                                          successful_actions
                                                          api_responses
-                                                         allow_raise_on_failure])
+                                                         allow_raise_on_failure
+                                                         internal_only])
 
         expect(ctx_with_defaults[:input]).to eql(input)
       end
@@ -159,3 +186,4 @@ module LightServiceExt
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

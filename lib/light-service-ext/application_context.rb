@@ -13,7 +13,9 @@ module LightServiceExt
       private
 
       def default_attrs
-        { errors: {}, params: {}, successful_actions: [], api_responses: [], allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure? }.freeze
+        { errors: {}, params: {}, successful_actions: [], api_responses: [],
+          allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure?,
+          internal_only: { error_info: nil } }.freeze
       end
     end
 
@@ -21,6 +23,12 @@ module LightServiceExt
       return if params.blank?
 
       self[:params].merge!(params.dup)
+    end
+
+    def add_internal_only(**attrs)
+      return if attrs.blank?
+
+      self[:internal_only].merge!(attrs.dup)
     end
 
     def add_errors(**errors)
