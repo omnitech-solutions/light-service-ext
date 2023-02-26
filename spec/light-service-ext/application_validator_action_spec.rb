@@ -27,7 +27,7 @@ module LightServiceExt
 
       it 'returns promised params and filled in errors' do
         expect(context).to be_failure
-        expect(context.errors).to eql(key: 'must be filled')
+        expect(context.errors).to eql(key: ['must be filled'])
       end
     end
   end

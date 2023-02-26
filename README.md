@@ -23,77 +23,9 @@ Or install it yourself as:
 
     $ gem install light-service-ext
 
-## ApplicationContext
-
-> Adds useful defaults to the organizer/orchestrator context
-- `:input` ~> values originally provided to organizer get moved here for better isolation
-- `:params` 
-  - stores values `filtered` and `mapped` from original `input`
-  - outcomes/return values provided by any action that implements `LightServiceExt::ApplicationAction`
-- `:errors`
-  - validation errors processed by `LightServiceExt::ApplicationValidatorAction` [dry-validation](https://github.com/dry-rb/dry-validation) contract
-  - manually added by an action e.g. `{ errors: { email: 'not found' } }`
-- `:successful_actions` ~> provides a list of actions processed mostly useful for debugging purposes
-- `:api_responses` ~> contains a list of external API interactions mostly for recording/debugging purposes
-- `:allow_raise_on_failure` ~> determines whether or not to throw a `RaiseOnContextError` error up the stack in the case of validation errors and/or captured exceptions
-- `:outcome` denotes the current status of the organizer with one of the following flags:
-  - `LightServiceExt::Outcome::COMPLETE`
-
-Example
-
-````ruby
-input = { order: order }
-overrides = {} # optionally override `params`, `errors` and `allow_raise_on_failure`
-LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
-
-# => { input: { order: order },
-#      params: {}, 
-#      errors: {}, 
-#      successful_actions: [], 
-#      api_responses: [], 
-#      allow_raise_on_failure: true 
-#    }
-````
-
-#### Useful methods
-
-- `.add_params(**params)`
-  - Adds given args to context's `params` field
-  - e.g. `add_params(user_id: 1) # => { params: { user_id: 1 } }`
-- `.add_errors(**errors)`
-  - Adds given args to to context's `errors` field
-  - Fails and returns from current action/organizer's context
-  - e.g. `add_to_errors(email: 'not found') # => { errors: { email: 'not found' } }`
-
-
 ## ApplicationOrganizer
-
 > Adds the following support
 
-### Useful methods
-
-- `.reduce_if_success(<list of actions>)` prevents execution of action/step in the case of context failure or `:errors` present
-- `.with_context(&block)` calls given block with `:ctx` argument
-- `.execute_if` ~> Useful if you want the current `Organizer` to act as a `Orchestrator` and call another organizer
-  - *ONLY* modifies the current organizer/orchestrator's as a result of executing `organizer_or_action_class_or_proc` if manually applied by a given `result_callback` Proc
-  - Executed `steps` do modify the current organizer/orchestrator's context without the need for manual intervention
-  - Arguments:
-    - `condition_block` (required) ~> given block is called with current `context` argument
-    - `organizer_or_action_class_or_proc` (required) ~> only executed if `condition_block` evaluates to `true`
-      - must be one of `ApplicationOrganizer`, `ApplicationAction`, `Proc`
-    - `apply_ctx_transform` (optional)
-      - given block is called prior to `organizer_or_action_class_or_proc` being executed 
-      - e.g. `apply_ctx_transform: -> (context) { context[:params][:user_id] = record(context)&.id }`
-      - returned value gets passed to `organizer_or_action_class_or_proc` call
-    - `result_callback` (optional)
-      - given block is called after `organizer_or_action_class_or_proc` has been executed
-      - Useful in the case where you want to augment the current organizer's context based on the context returned from the `organizer_or_action_class_or_proc` call
-      - e.g. `result_callback: -> (ctx:, result:) { ctx[:params] = result[:params] }`
-        - `ctx:` represents the main `organizer/orchestrator's` context
-        - `result:` represents the context returned from the executed `organizer_or_action_class_or_proc`
-    - `steps` (optional) ~> calls current `organizer/orchestrator's` actions/steps and called once `organizer_or_action_class_or_proc` has been processed
-      - *PLEASE NOTE* called regardless of the result from the `organizer_or_action_class_or_proc` call unless you *manually* fail the current context or add `:errors`
-  
 #### Error Handling
 > Provided by `.with_error_handler`
 
@@ -126,25 +58,64 @@ LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
 #### Retrieve Record
 > Allows for a block to be defined on an organizer in order to retrieve the model record
 
-Example
+#### Failing The Context
+- Prevents further action's been executed in the following scenarios:
+  - All actions complete determined by organizer's `:outcome` context field set to `LightServiceExt::Outcome::COMPLETE`
+
+#### Example
 
 ```ruby
 class TaxCalculator < LightServiceExt::ApplicationOrganizer
   self.retrieve_record = -> (ctx:) { User.find_by(email: ctx.params[:email]) }
 
-  def self.call(input:)
+  def self.call(input)
     user = record(ctx: input) # `.record` method executes proc provided to `retrieve_record`
-    input = { user: user }.merge(user: user)
-    reduce_with({ input: input }, steps)
+    input = { user: user }.merge(input)
+    
+    super(input)
+  end
+  
+  def self.steps
+    [TaxValidator, CalcuateTaxAction]
   end
 end
 ```
 
-#### Failing The Context
-- Prevents further action's been executed in the following scenarios:
-  - All actions complete determined by organizer's `:outcome` context field set to `LightServiceExt::Outcome::COMPLETE`
+## ApplicationOrchestrator
+> Useful if you want the current `Organizer` to act as a `Orchestrator` and call another organizer
 
-### ApplicationAction
+- *ONLY* modifies the orchestrator context from executing `organizer_steps` if manually applied via `each_organizer_result` Proc
+
+### method overrides
+- `organizer_steps` ~ must be a list of organizers to be called prior to orchestrator's actions
+
+### Example
+
+```ruby
+class TaxCalculatorReport < LightServiceExt::ApplicationOrchestrator
+  self.retrieve_record = -> (ctx:) { User.find_by(email: ctx.params[:email]) }
+
+  def self.call(input)
+    user = record(ctx: input) # `.record` method executes proc provided to `retrieve_record`
+    input = { user: user }.merge(user: user)
+    reduce_with({ input: input }, steps)
+    
+    super(input.merge({ user: user })) do |current_organizer_ctx, orchestrator_ctx:|
+      orchestrator_ctx.add_params(current_organizer_ctx.params.slice(:user_id)) # manually add params from executed organizer(s) 
+    end
+  end
+
+  def organizer_steps
+    [TaxCalculator]
+  end
+
+  def steps
+    [TaxReportAction]
+  end
+end
+```
+
+## ApplicationAction
 
 #### Useful methods
 - TODO
@@ -180,6 +151,71 @@ end
 
 - `.contract_class` ~> sets the [dry-validation](https://github.com/dry-rb/dry-validation) contract to be applied by the current validator action
 - `.params_mapper_class` ~> sets the mapper class that must implement `.map_from(context)` and return mapped `:input` values
+
+ 
+## ApplicationContext
+
+> Adds useful defaults to the organizer/orchestrator context
+- `:input` ~> values originally provided to organizer get moved here for better isolation
+- `:params` 
+  - stores values `filtered` and `mapped` from original `input`
+  - outcomes/return values provided by any action that implements `LightServiceExt::ApplicationAction`
+- `:errors`
+  - validation errors processed by `LightServiceExt::ApplicationValidatorAction` [dry-validation](https://github.com/dry-rb/dry-validation) contract
+  - manually added by an action e.g. `{ errors: { email: 'not found' } }`
+- `:successful_actions` ~> provides a list of actions processed mostly useful for debugging purposes e.g. `['SomeActionClassName']`
+- `invoked_action` ~> instance of action to being called.
+- `:current_api_response` ~> action issued api response
+- `:api_responses` ~> contains a list of external API interactions mostly for recording/debugging purposes (**internal only**)
+- `:allow_raise_on_failure` ~> determines whether or not to throw a `RaiseOnContextError` error up the stack in the case of validation errors and/or captured exceptions
+- `:status` denotes the current status of the organizer with one of the following flags:
+  - `LightServiceExt::Status::COMPLETE`
+  - `LightServiceExt::Status::INCOMPLETE`
+- `:last_failed_context` ~ copy of context that failed e.g. with `errors` field present
+- `internal_only` ~ includes the likes of raised error summary and should never be passed to endpoint responses
+Example
+
+````ruby
+input = { order: order }
+overrides = {} # optionally override `params`, `errors` and `allow_raise_on_failure`
+LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
+
+# => { input: { order: order },
+#      errors: { email: ['not found'] },
+#      params: { user_id: 1 },
+#      status: Status::INCOMPLETE,
+#      invoked_action: SomeActionInstance,
+#      successful_actions: ['SomeActionClassName'],
+#      current_api_response: { user_id: 1, status: 'ACTIVE' },
+#      api_responses: [ { user_id: 1, status: 'ACTIVE' } ],
+#      last_failed_context: {input: { order: order }, params: {}, ...},
+#      allow_raise_on_failure: true,
+#      internal_only: { error_info: ErrorInfoInstance }
+#    }
+````
+
+#### Useful methods
+- `.add_params(**params)`
+  - Adds given args to context's `params` field
+  - e.g. `add_params(user_id: 1) # => { params: { user_id: 1 } }`
+
+- `add_errors!`
+  - Adds given args to to context's `errors` field
+  - Fails and returns from current action/organizer's context
+  - e.g. `add_to_errors!(email: 'not found') # => { errors: { email: 'not found' } }`
+
+- `.add_errors(**errors)`
+  - Adds given args to to context's `errors` field
+  - DOES NOT fails current context
+  - e.g. `add_to_errors(email: 'not found') # => { errors: { email: 'not found' } }`
+
+- `.add_status(status)`
+  - Should be one of Statuses e.g. `Status::COMPLETE` 
+  - e.g. `add_status(Status::COMPLETE) # => { status: Status::COMPLETE }`
+
+- `.add_internal_only(attrs)`
+  - e.g. `add_internal_only(request_id: 54) # => { internal_only: { error_info: nil, request_id: 54 }  }`
+- `add_to_successful_actions(action_name_or_names)` ~> adds action names successfully executed
 
 ## ContextError
 

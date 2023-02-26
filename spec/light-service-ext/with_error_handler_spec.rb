@@ -40,7 +40,7 @@ module LightServiceExt
 
           it 'adds model errors' do
             expect(errors_handled_ctx.failure?).to be_truthy
-            expect(errors_handled_ctx.errors).to eql({ key => key_error })
+            expect(errors_handled_ctx.errors).to eql({ key => [key_error] })
             expect(errors_handled_ctx.internal_only[:error_info]).to be_an_instance_of(ErrorInfo)
             expect(LightServiceExt.config.logger).to have_received(:error)
           end

@@ -8,7 +8,7 @@ module LightServiceExt
     executed do |context|
       validator = map_and_validate_inputs(context)
       context.add_params(**validator.to_h)
-      context.add_errors!(**validator.errors.to_h.transform_values(&:first))
+      context.add_errors!(**validator.errors.to_h)
     end
 
     class << self

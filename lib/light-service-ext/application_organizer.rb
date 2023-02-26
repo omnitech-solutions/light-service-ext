@@ -4,20 +4,28 @@ module LightServiceExt
   class ApplicationOrganizer
     extend LightService::Organizer
 
-    def self.call(context)
-      with(ApplicationContext.make_with_defaults(context))
-        .around_each(RecordActions)
-        .reduce(all_steps)
-    end
+    class << self
+      def call(context)
+        with(ApplicationContext.make_with_defaults(context))
+          .around_each(RecordActions)
+          .reduce(all_steps)
+      end
 
-    def self.steps
-      raise NotImplementedError
-    end
+      def steps
+        raise NotImplementedError
+      end
 
-    def self.all_steps
-      return steps.push(AllActionsCompleteAction) if steps.is_a?(Array)
+      def reduce_if_success(steps)
+        reduce_if(->(ctx) { ctx.success? && ctx[:errors].blank? }, steps)
+      end
 
-      [steps].push(AllActionsCompleteAction)
+      private
+
+      def all_steps
+        return steps.push(AllActionsCompleteAction) if steps.is_a?(Array)
+
+        [steps].push(AllActionsCompleteAction)
+      end
     end
   end
 end

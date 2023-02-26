@@ -31,7 +31,7 @@ module LightServiceExt
 
     def errors
       model = error && (error.try(:model) || error.try(:record))
-      return model.errors.messages.transform_values(&:first) if model.present?
+      return model.errors.messages if model.present?
 
       { base: message }
     end

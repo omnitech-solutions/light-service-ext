@@ -19,7 +19,7 @@ module LightServiceExt
         return if invoked_action.nil?
 
         ctx.add_to_successful_actions(invoked_action.name)
-        ctx.add_to_api_responses(result.last_api_response)
+        ctx.add_to_api_responses(result.current_api_response)
         ctx
       end
 

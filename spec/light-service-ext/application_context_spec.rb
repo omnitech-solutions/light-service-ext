@@ -240,7 +240,7 @@ module LightServiceExt
                                                         api_responses
                                                         internal_only
                                                         invoked_action
-                                                        last_api_response
+                                                        current_api_response
                                                         last_failed_context
                                                       ])
 

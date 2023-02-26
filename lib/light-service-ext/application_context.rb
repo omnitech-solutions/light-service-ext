@@ -19,7 +19,7 @@ module LightServiceExt
           status: Status::INCOMPLETE,
           invoked_action: nil,
           successful_actions: [],
-          last_api_response: nil,
+          current_api_response: nil,
           api_responses: [],
           last_failed_context: nil,
           allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure?,
@@ -47,10 +47,6 @@ module LightServiceExt
       add_value_to_ctx(:status, status)
     end
 
-    def add_internal_only(**attrs)
-      add_attrs_to_ctx(:internal_only, **attrs)
-    end
-
     def add_current_api_response(api_response)
       add_value_to_ctx(:current_api_response, api_response)
     end
@@ -59,6 +55,10 @@ module LightServiceExt
       return if failed_context.nil? || failed_context.try(:success?)
 
       add_value_to_ctx(:last_failed_context, failed_context)
+    end
+
+    def add_internal_only(**attrs)
+      add_attrs_to_ctx(:internal_only, **attrs)
     end
 
     def add_to_api_responses(*api_response)

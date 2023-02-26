@@ -16,6 +16,7 @@ application_action
 all_actions_complete_action
 application_validator_action
 application_organizer
+application_orchestrator
 ].each do |filename|
   require File.expand_path("../light-service-ext/#{filename}", Pathname.new(__FILE__).realpath)
 end
