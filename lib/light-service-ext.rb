@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'light-service'
+require 'dry-validation'
+require 'active_support/core_ext/array'
+require 'active_support/configurable'
+
+
 %w[
 version
 constants
