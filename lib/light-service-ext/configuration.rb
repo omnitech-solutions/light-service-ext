@@ -4,8 +4,8 @@ module LightServiceExt
   class Configuration
     include ActiveSupport::Configurable
 
-    config_accessor(:allow_raise_on_failure, default: true)
-    config_accessor(:non_fatal_error_classes, default: [])
+    config_accessor(:allow_raise_on_failure) { true }
+    config_accessor(:non_fatal_error_classes) { [] }
     config_accessor(:default_non_fatal_error_classes) { ['Rails::ActiveRecordError'.safe_constantize] }
     config_accessor(:logger) { (defined? Rails.logger).nil? ? Logger.new($stdout) : Rails.logger }
 
