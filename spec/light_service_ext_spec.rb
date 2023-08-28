@@ -26,7 +26,7 @@ RSpec.describe LightServiceExt do
 
       describe '#non_fatal_error_classes' do
         it 'returns set fatal error classes' do
-          expect(config.non_fatal_error_classes).to match_array([error_class])
+          expect(config.non_fatal_error_classes).to contain_exactly(error_class)
         end
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe LightServiceExt do
 
       describe '#default_non_fatal_error_classes' do
         it 'returns set non fatal error classes' do
-          expect(config.default_non_fatal_error_classes).to match_array([default_error_class])
+          expect(config.default_non_fatal_error_classes).to contain_exactly(default_error_class)
         end
       end
     end

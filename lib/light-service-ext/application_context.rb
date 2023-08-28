@@ -29,11 +29,11 @@ module LightServiceExt
     end
 
     def add_params(**params)
-      add_attrs_to_ctx(:params, params)
+      add_attrs_to_ctx(:params, **params)
     end
 
     def add_errors(**errors)
-      add_attrs_to_ctx(:errors, errors)
+      add_attrs_to_ctx(:errors, **errors)
     end
 
     def add_errors!(**errors)
@@ -77,16 +77,6 @@ module LightServiceExt
       !!self[:allow_raise_on_failure]
     end
 
-    def method_missing(method_name, *arguments, &block)
-      return self[method_name] if key?(method_name)
-
-      super
-    end
-
-    def respond_to_missing?(method_name, include_private = false)
-      key?(method_name) || super
-    end
-
     private
 
     def add_value_to_ctx(key, value)
@@ -106,6 +96,16 @@ module LightServiceExt
 
       self[key] = self[key].concat(values).compact
       nil
+    end
+
+    def method_missing(method_name, *arguments, &block)
+      return self[method_name] if key?(method_name)
+
+      super
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      key?(method_name) || super
     end
   end
 end

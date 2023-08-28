@@ -12,7 +12,7 @@ module LightServiceExt
 
     describe '.keys' do
       it 'returns schema rule keys' do
-        expect(contract_class.keys).to match_array([:email])
+        expect(contract_class.keys).to contain_exactly(:email)
       end
     end
 
@@ -38,10 +38,10 @@ module LightServiceExt
             expect(result).to be_failure
 
             errors = result.errors.to_h
-            expect(errors.keys).to match_array([:email])
+            expect(errors.keys).to contain_exactly(:email)
 
             error_messages = errors[:email]
-            expect(error_messages).to match_array(["must be a valid email"])
+            expect(error_messages).to contain_exactly("must be a valid email")
           end
         end
       end
