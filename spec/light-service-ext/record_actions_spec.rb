@@ -21,8 +21,8 @@ module LightServiceExt
 
       it 'returns expected context' do
         expect(called_ctx.success?).to be_truthy
-        expect(called_ctx.successful_actions).to match_array([])
-        expect(called_ctx.api_responses).to match_array([])
+        expect(called_ctx.successful_actions).to be_empty
+        expect(called_ctx.api_responses).to be_empty
         expect(called_ctx.status).to eql(Status::INCOMPLETE)
         expect(called_ctx[:last_failed_context]).to be_nil
       end
@@ -33,8 +33,8 @@ module LightServiceExt
 
         it 'adds api_response as last api response' do
           expect(called_ctx.success?).to be_truthy
-          expect(called_ctx.successful_actions).to match_array([action_name])
-          expect(called_ctx.api_responses).to match_array([current_api_response])
+          expect(called_ctx.successful_actions).to contain_exactly(action_name)
+          expect(called_ctx.api_responses).to contain_exactly(current_api_response)
           expect(called_ctx.status).to eql(Status::INCOMPLETE)
           expect(called_ctx[:last_failed_context]).to be_nil
         end

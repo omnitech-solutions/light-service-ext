@@ -11,7 +11,7 @@ module LightServiceExt
       it 'adds successful action name to context' do
         ctx.add_to_successful_actions(value)
 
-        expect(ctx.successful_actions).to match_array([value])
+        expect(ctx.successful_actions).to contain_exactly(value)
       end
 
       it 'preserves other successful action name' do
@@ -19,7 +19,7 @@ module LightServiceExt
 
         ctx.add_to_successful_actions('other-value')
 
-        expect(ctx.successful_actions).to match_array([value, 'other-value'])
+        expect(ctx.successful_actions).to contain_exactly(value, 'other-value')
       end
     end
 
@@ -27,7 +27,7 @@ module LightServiceExt
       it 'adds last api response to context' do
         ctx.add_to_api_responses(value)
 
-        expect(ctx.api_responses).to match_array([value])
+        expect(ctx.api_responses).to contain_exactly(value)
       end
 
       it 'preserves other api responses' do
@@ -35,7 +35,7 @@ module LightServiceExt
 
         ctx.add_to_api_responses('other-value')
 
-        expect(ctx.api_responses).to match_array([value, 'other-value'])
+        expect(ctx.api_responses).to contain_exactly(value, 'other-value')
       end
     end
 
@@ -263,7 +263,7 @@ module LightServiceExt
           end
 
           it 'allows for overrides' do
-            expect(ctx_with_defaults[:successful_actions]).to match_array(['some-action-class-name'])
+            expect(ctx_with_defaults[:successful_actions]).to contain_exactly('some-action-class-name')
           end
         end
 
@@ -273,7 +273,7 @@ module LightServiceExt
           end
 
           it 'allows for overrides' do
-            expect(ctx_with_defaults[:api_responses]).to match_array(['some-api-response'])
+            expect(ctx_with_defaults[:api_responses]).to contain_exactly('some-api-response')
           end
         end
 
