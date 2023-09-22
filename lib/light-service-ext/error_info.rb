@@ -8,7 +8,7 @@ module LightServiceExt
       @fatal = fatal
       @error = error
       @type = error.class.name
-      @message = message || error&.message
+      @message = message || error.try(:message)
       @title = "#{error.class.name} : #{error&.message}"
     end
 
@@ -30,8 +30,8 @@ module LightServiceExt
     end
 
     def errors
-      model = error && (error.try(:model) || error.try(:record))
-      return model.errors.messages if model.present?
+      model = error.try(:model) || error.try(:record)
+      message = model.present? ? model.errors.messages : error.message
 
       { base: message }
     end

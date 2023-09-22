@@ -9,8 +9,61 @@ RSpec.describe LightServiceExt::ErrorInfo do
   let(:error) { StandardError.new(message) }
   let(:error_info_class) { Class.new(described_class) }
 
-  before do
-    error.set_backtrace(backtrace)
+  # before do
+  #   error.set_backtrace(backtrace)
+  # end
+
+  describe '#errors' do
+    context 'when error is a StandardError with no associated model or record' do
+      let(:error) { StandardError.new(message) }
+
+      it 'returns a hash with a base error message' do
+        expect(instance.errors).to eq({ base: message })
+      end
+    end
+
+    context 'with stubbed error' do
+      before(:each) do
+        allow(error).to receive(:set_backtrace)
+        allow(error).to receive(:backtrace) { backtrace }
+      end
+
+      context 'when error is associated with a model with validation errors' do
+        let(:model) { double('Model', errors: double(:messages, messages: { field1: ['error1', 'error2'], field2: ['error3'] })) }
+        let(:error) { double('Error', model: model, message: nil) }
+
+        it 'returns a hash with model validation errors' do
+          expect(instance.errors).to eq({ base: { field1: ['error1', 'error2'], field2: ['error3'] } })
+        end
+      end
+
+      context 'when error is associated with a model with no validation errors' do
+        let(:model) { double('Model', errors: double(:messages, messages: {})) }
+        let(:error) { double('Error', model: model, message: nil) }
+
+        it 'returns an empty hash' do
+          expect(instance.errors).to eq({base: {}})
+        end
+      end
+
+      context 'when error is associated with a record with validation errors' do
+        let(:record) { double('Record', errors: double(:messages, messages: { field1: ['error1', 'error2'], field2: ['error3'] })) }
+        let(:error) { double('Error', record: record, message: nil) }
+
+        it 'returns a hash with record validation errors' do
+          expect(instance.errors).to eq({ base: { field1: ['error1', 'error2'], field2: ['error3'] } })
+        end
+      end
+
+      context 'when error is associated with a record with no validation errors' do
+        let(:record) { double('Record', errors: double(:messages, messages: {})) }
+        let(:error) { double('Error', record: record, message: nil) }
+
+        it 'returns an empty hash' do
+          expect(instance.errors).to eq({base: {}})
+        end
+      end
+    end
   end
 
   describe '#type' do
