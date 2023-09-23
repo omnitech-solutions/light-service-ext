@@ -7,6 +7,95 @@ module LightServiceExt
 
     subject(:ctx) { described_class.make_with_defaults(input) }
 
+    describe '#record_raised_error' do
+      let(:backtrace) { ['some-backtrace-line'] }
+      let(:error) { RuntimeError.new('Something went wrong') }
+
+      before do
+        allow(subject).to receive(:organized_by) { ApplicationOrganizer }
+        error.set_backtrace(backtrace)
+      end
+
+      it 'records the error and adds it to the errors hash' do
+        subject.record_raised_error(error)
+
+        expect(subject.error_info.type).to eq('RuntimeError')
+        expect(subject.error_info.message).to eq('Something went wrong')
+        expect(subject.errors).to eq(base: { organizer: 'ApplicationOrganizer', type: 'RuntimeError', message: 'Something went wrong' })
+        expect(subject.internal_only).to eq({exception: { backtrace: ["some-backtrace-line"], message: "Something went wrong", type: "RuntimeError" }})
+      end
+
+      it 'fails the operation and sets the error info' do
+        subject.record_raised_error(error)
+
+        expect(subject.failure?).to be(true)
+      end
+    end
+
+    describe '#organizer_name' do
+      context 'with organizer' do
+        before { allow(subject).to receive(:organized_by) { ApplicationOrganizer } }
+
+        it 'returns the name of the organizer class' do
+          expect(subject.organizer_name).to eq('ApplicationOrganizer')
+        end
+      end
+
+      context 'without organizer' do
+        before { allow(subject).to receive(:organized_by) { nil } }
+
+        it 'returns nil' do
+          expect(subject.organizer_name).to be(nil)
+        end
+      end
+    end
+
+    describe '#action_name' do
+      context 'with invoked action' do
+        before { allow(subject).to receive(:invoked_action) { ApplicationAction } }
+
+        it 'returns the name of the organizer class' do
+          expect(subject.action_name).to eq('ApplicationAction')
+        end
+      end
+
+      context 'without invoked action' do
+        before { allow(subject).to receive(:invoked_action) { nil } }
+
+        it 'returns nil' do
+          expect(subject.action_name).to be(nil)
+        end
+      end
+    end
+
+    describe '#formatted_errors' do
+      before { allow(subject).to receive(:errors) { errors } }
+
+      context 'with errors' do
+        let(:errors) { { name: ['is required'], email: ['is invalid'] } }
+
+        it 'returns a JSON string of the errors' do
+          expect(subject.formatted_errors).to eq(JSON.pretty_generate(errors))
+        end
+      end
+
+      context 'without errors' do
+        let(:errors) { {} }
+
+        it 'returns an empty JSON string if there are no errors' do
+          expect(subject.formatted_errors).to eq(JSON.pretty_generate({}))
+        end
+      end
+
+      context 'without errors' do
+        let(:errors) { nil }
+
+        it 'returns an empty JSON string if there are no errors' do
+          expect(subject.formatted_errors).to eq(JSON.pretty_generate({}))
+        end
+      end
+    end
+
     describe '#add_to_successful_actions' do
       it 'adds successful action name to context' do
         ctx.add_to_successful_actions(value)

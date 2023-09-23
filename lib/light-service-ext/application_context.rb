@@ -2,6 +2,8 @@
 
 module LightServiceExt
   class ApplicationContext < LightService::Context
+    attr_reader :error_info
+
     class << self
       def make_with_defaults(input = {}, overrides = {})
         defaults = default_attrs
@@ -23,7 +25,7 @@ module LightServiceExt
           api_responses: [],
           last_failed_context: nil,
           allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure?,
-          internal_only: { error_info: nil }
+          internal_only: {}
         }.freeze
       end
     end
@@ -61,6 +63,15 @@ module LightServiceExt
       add_attrs_to_ctx(:internal_only, **attrs)
     end
 
+    def record_raised_error(error)
+      @error_info = ErrorInfo.new(error)
+      error_type = @error_info.type
+      error_message = @error_info.message
+      add_internal_only(exception: { type: error_type, message: error_message, backtrace: @error_info.clean_backtrace })
+      add_errors(base: { organizer: organizer_name, type: error_type, message: error_message })
+      fail!
+    end
+
     def add_to_api_responses(*api_response)
       add_collection_to_ctx(:api_responses, *api_response)
     end
@@ -75,6 +86,22 @@ module LightServiceExt
 
     def allow_raise_on_failure?
       !!self[:allow_raise_on_failure]
+    end
+
+    def organizer_name
+      return nil if organized_by.nil?
+
+      organized_by.name.split('::').last
+    end
+
+    def action_name
+      return nil if invoked_action.blank?
+
+      invoked_action.name.split('::').last
+    end
+
+    def formatted_errors
+      JSON.pretty_generate(errors.presence || {})
     end
 
     private

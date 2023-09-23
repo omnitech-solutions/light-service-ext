@@ -41,7 +41,7 @@ module LightServiceExt
         type: type,
         message: message,
         exception: title,
-        backtrace: clean_backtrace[0, 3]&.join("\n"),
+        backtrace: clean_backtrace[0, 5]&.join("\n"),
         error: error,
         fatal_error?: fatal_error?,
         errors: errors
