@@ -325,6 +325,21 @@ module LightServiceExt
 
       subject(:ctx_with_defaults) { described_class.make_with_defaults(input, overrides) }
 
+      describe '#add_meta' do
+        it 'adds meta to context' do
+          ctx_with_defaults.add_meta(key => value)
+          expect(ctx_with_defaults.meta).to eql(key => value)
+        end
+      end
+
+      context 'with meta as an override' do
+        let(:overrides) { { meta: { key: 'some-value' } } }
+
+        it 'adds meta to context' do
+          expect(ctx_with_defaults.meta).to eql(key => value)
+        end
+      end
+
       context 'with non symbolized input keys' do
         let(:input) { { "key" => 'some-value' } }
 

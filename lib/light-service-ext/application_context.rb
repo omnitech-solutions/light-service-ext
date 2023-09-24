@@ -25,7 +25,8 @@ module LightServiceExt
           api_responses: [],
           last_failed_context: nil,
           allow_raise_on_failure: LightServiceExt.config.allow_raise_on_failure?,
-          internal_only: {}
+          internal_only: {},
+          meta: {}
         }.freeze
       end
     end
@@ -62,6 +63,11 @@ module LightServiceExt
     def add_internal_only(**attrs)
       add_attrs_to_ctx(:internal_only, **attrs)
     end
+
+    def add_meta(**attrs)
+      add_attrs_to_ctx(:meta, **attrs)
+    end
+
 
     def record_raised_error(error)
       @error_info = ErrorInfo.new(error)

@@ -173,12 +173,14 @@ end
   - `LightServiceExt::Status::INCOMPLETE`
 - `:last_failed_context` ~ copy of context that failed e.g. with `errors` field present
 - `internal_only` ~ includes the likes of raised error summary and should never be passed to endpoint responses
+- `meta` ~ used to store any additional information that could be helpful especially for debugging purposes.
 Example
 
 ````ruby
 input = { order: order }
 overrides = {} # optionally override `params`, `errors` and `allow_raise_on_failure`
-LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
+meta = { current_user_id: 12345, request_id: some-unique-request-id, impersonator_id: 54321 }
+LightServiceExt::ApplicationContext.make_with_defaults(input, overrides, meta: meta)
 
 # => { input: { order: order },
 #      errors: { email: ['not found'] },
@@ -190,7 +192,8 @@ LightServiceExt::ApplicationContext.make_with_defaults(input, overrides)
 #      api_responses: [ { user_id: 1, status: 'ACTIVE' } ],
 #      last_failed_context: {input: { order: order }, params: {}, ...},
 #      allow_raise_on_failure: true,
-#      internal_only: { error_info: ErrorInfoInstance }
+#      internal_only: { error_info: ErrorInfoInstance },
+#     meta: { current_user_id: 12345, request_id: some-unique-request-id, impersonator_id: 54321 }
 #    }
 ````
 
