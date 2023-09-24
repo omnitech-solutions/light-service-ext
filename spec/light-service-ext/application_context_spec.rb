@@ -8,27 +8,42 @@ module LightServiceExt
     subject(:ctx) { described_class.make_with_defaults(input) }
 
     describe '#record_raised_error' do
-      let(:backtrace) { ['some-backtrace-line'] }
+      let(:error_message) { 'Something went wrong' }
       let(:error) { RuntimeError.new('Something went wrong') }
+      let(:backtrace) { ['some-backtrace-line'] }
 
       before do
         allow(subject).to receive(:organized_by) { ApplicationOrganizer }
+        allow(ctx).to receive(:invoked_action) { ApplicationAction }
+
         error.set_backtrace(backtrace)
       end
 
       it 'records the error and adds it to the errors hash' do
         subject.record_raised_error(error)
 
-        expect(subject.error_info.type).to eq('RuntimeError')
-        expect(subject.error_info.message).to eq('Something went wrong')
-        expect(subject.errors).to eq(base: { organizer: 'ApplicationOrganizer', type: 'RuntimeError', message: 'Something went wrong' })
-        expect(subject.internal_only).to eq({exception: { backtrace: ["some-backtrace-line"], message: "Something went wrong", type: "RuntimeError" }})
+        expect(subject.errors).to eql({ base: error_message })
+        expect(subject.success?).to be_truthy
+
+        internal_only = subject.internal_only
+        expect(internal_only.keys).to eql([:error_info])
+
+        error_info = internal_only[:error_info]
+        expect(error_info.keys).to eql([:organizer, :action_name, :error])
+        expect(error_info[:organizer]).to eql('ApplicationOrganizer')
+        expect(error_info[:action_name]).to eql('ApplicationAction')
+
+        raised_error_info = error_info[:error]
+        expect(raised_error_info.keys).to eql([:type, :message, :backtrace])
+        expect(raised_error_info[:type]).to eql(error.class.name)
+        expect(raised_error_info[:message]).to eql(error_message)
+        expect(raised_error_info[:backtrace]).to eql(error.backtrace)
       end
 
       it 'fails the operation and sets the error info' do
         subject.record_raised_error(error)
 
-        expect(subject.failure?).to be(true)
+        expect(subject.success?).to be(true)
       end
     end
 

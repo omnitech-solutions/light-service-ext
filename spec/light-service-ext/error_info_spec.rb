@@ -9,10 +9,6 @@ RSpec.describe LightServiceExt::ErrorInfo do
   let(:error) { StandardError.new(message) }
   let(:error_info_class) { Class.new(described_class) }
 
-  # before do
-  #   error.set_backtrace(backtrace)
-  # end
-
   describe '#errors' do
     context 'when error is a StandardError with no associated model or record' do
       let(:error) { StandardError.new(message) }
@@ -133,6 +129,8 @@ RSpec.describe LightServiceExt::ErrorInfo do
   end
 
   describe '#error_summary' do
+    before { error.set_backtrace(backtrace) }
+
     it 'returns summary of error' do
       expect(instance.error_summary).to eql(<<~TEXT
         =========== SERVER ERROR FOUND: StandardError : some-error ===========
@@ -148,6 +146,8 @@ RSpec.describe LightServiceExt::ErrorInfo do
 
   describe '#to_h' do
     subject(:hash) { instance.to_h }
+
+    before { error.set_backtrace(backtrace) }
 
     it 'returns custom key value pairs' do
       expect(hash.keys).to match_array(%i[type message exception backtrace error errors fatal_error?])

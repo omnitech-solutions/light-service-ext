@@ -67,9 +67,12 @@ module LightServiceExt
       @error_info = ErrorInfo.new(error)
       error_type = @error_info.type
       error_message = @error_info.message
-      add_internal_only(exception: { type: error_type, message: error_message, backtrace: @error_info.clean_backtrace })
-      add_errors(base: { organizer: organizer_name, type: error_type, message: error_message })
-      fail!
+      add_internal_only(error_info: { organizer: organizer_name,
+                                      action_name: action_name,
+                                      error: { type: error_type, message: error_message, backtrace: @error_info.clean_backtrace } })
+      add_errors(base: error_message)
+
+      LightServiceExt.config.on_raised_error.call(self, error)
     end
 
     def add_to_api_responses(*api_response)

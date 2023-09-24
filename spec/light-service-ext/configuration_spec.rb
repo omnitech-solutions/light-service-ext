@@ -60,6 +60,33 @@ module LightServiceExt
           end
         end
       end
+
+      describe '#on_raised_error' do
+        it 'returns a proc' do
+          expect(config.on_raised_error).to be_a(Proc)
+        end
+
+        context 'with configured callback' do
+          let(:error) { ArgumentError.new('some-error') }
+          let(:callback) { proc { |_ctx, _error| } }
+
+          before do
+            described_class.configure { |config| config.on_raised_error = callback }
+          end
+
+          after(:each) do
+            described_class.configure { |config| config.on_raised_error = proc {|_ctx, _error|} }
+          end
+
+
+          it 'returns set proc' do
+            ctx = ApplicationContext.make_with_defaults
+            ctx.record_raised_error(error)
+
+            expect(described_class.config.on_raised_error).to eql(callback)
+          end
+        end
+      end
     end
   end
 end
