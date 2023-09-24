@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.name = "light-service-ext"
   gem.require_paths = ["lib"]
   gem.version = LightServiceExt::VERSION
-  gem.required_ruby_version = ">= 3"
+  gem.required_ruby_version = ">= 2.7"
 
   gem.metadata["homepage_uri"] = gem.homepage
   gem.metadata["source_code_uri"] = gem.homepage

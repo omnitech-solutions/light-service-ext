@@ -6,14 +6,37 @@ module LightServiceExt
 
     def self.call(context)
       with_error_handler(ctx: context) do
-        result = yield
-        return context if outcomes_complete?(ctx: context, result: result)
+        self.before_execute_block.call(context)
 
+        result = yield || context
+
+        self.after_execute_block.call(context)
+        self.after_success_block.call(context) if result.success?
+        self.after_failure_block.call(context) if result.failure?
+
+        return context if outcomes_complete?(ctx: context, result: result)
         merge_api_responses!(ctx: context, result: result)
       end
     end
 
     class << self
+      attr_writer :before_execute_block, :after_execute_block, :after_success_block, :after_failure_block
+
+      def before_execute_block
+        @before_execute_block ||= ->(_context) {}
+      end
+
+      def after_execute_block
+        @after_execute_block ||= ->(_context) {}
+      end
+
+      def after_success_block
+        @after_success_block ||= ->(_context) {}
+      end
+
+      def after_failure_block
+        @after_failure_block ||= ->(_context) {}
+      end
       def merge_api_responses!(ctx:, result:)
         invoked_action = result.invoked_action
         return if invoked_action.nil?

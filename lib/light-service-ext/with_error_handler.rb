@@ -4,7 +4,7 @@
 module LightServiceExt
   module WithErrorHandler
     def with_error_handler(ctx:)
-      @result = yield || ApplicationContext.make_with_defaults
+      @result = yield || ctx
     rescue StandardError => e
       ctx.record_raised_error(e)
       ctx.add_status(Status::COMPLETE)
