@@ -27,6 +27,7 @@ module LightServiceExt
       it 'fails context and records error' do
         expect(raised_error_handled_ctx.failure?).to be_truthy
         expect(raised_error_handled_ctx).to have_received(:record_raised_error).with(error)
+        expect(raised_error_handled_ctx.status).to eql(Status::COMPLETE)
       end
     end
   end

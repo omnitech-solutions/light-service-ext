@@ -24,6 +24,9 @@ module LightServiceExt
 
     let(:input) { { some_proc: proc {} } }
 
+    before { allow_any_instance_of(ApplicationContext).to receive(:organized_by) { ApplicationOrganizer } }
+
+
     it 'adds inputted data as input key value pair' do
       ctx = subject_class.call(input)
 
@@ -32,9 +35,11 @@ module LightServiceExt
     end
 
     it 'calls underlying action' do
-      expect do
-        subject_class.call(some_proc: proc { raise 'error' })
-      end.to raise_error RuntimeError, 'error'
+      ctx = subject_class.call(some_proc: proc { raise 'error' })
+
+      expect(ctx.errors).to be_present
+      expect(ctx).to be_failure
+      expect(ctx.status).to eql(Status::COMPLETE)
     end
   end
 end

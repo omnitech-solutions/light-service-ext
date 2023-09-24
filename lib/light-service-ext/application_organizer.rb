@@ -3,12 +3,15 @@
 module LightServiceExt
   class ApplicationOrganizer
     extend LightService::Organizer
+    extend WithErrorHandler
 
     class << self
       def call(context)
-        with(ApplicationContext.make_with_defaults(context))
-          .around_each(RecordActions)
-          .reduce(all_steps)
+        ctx = ApplicationContext.make_with_defaults(context)
+
+        with_error_handler(ctx: ctx) do
+          with(ctx).around_each(RecordActions).reduce(all_steps)
+        end
       end
 
       def steps
