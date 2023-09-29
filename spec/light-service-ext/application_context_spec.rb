@@ -361,6 +361,7 @@ module LightServiceExt
                                                         invoked_action
                                                         current_api_response
                                                         last_failed_context
+                                                        meta
                                                       ])
 
         expect(ctx_with_defaults[:input]).to eql(input)

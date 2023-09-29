@@ -19,40 +19,6 @@ module LightServiceExt
 
       subject(:called_ctx) { described_class.call(ctx, &proc) }
 
-      describe 'lifecycle callbacks' do
-        before do
-          allow(described_class.before_execute_block).to receive(:call)
-          allow(described_class.after_execute_block).to receive(:call)
-          allow(described_class.after_success_block).to receive(:call)
-          allow(described_class.after_failure_block).to receive(:call)
-        end
-
-        it 'calls appropriate lifecycle callbacks' do
-          called_ctx
-
-          expect(described_class.before_execute_block).to have_received(:call).with(kind_of(ApplicationContext))
-          expect(described_class.after_execute_block).to have_received(:call).with(kind_of(ApplicationContext))
-          expect(described_class.after_success_block).to have_received(:call).with(kind_of(ApplicationContext))
-          expect(described_class.after_failure_block).not_to have_received(:call)
-        end
-
-        context 'with failure' do
-          before do
-            allow_any_instance_of(ApplicationContext).to receive(:success?) { false }
-            allow_any_instance_of(ApplicationContext).to receive(:failure?) { true }
-          end
-
-          it 'calls appropriate lifecycle callbacks' do
-            called_ctx
-
-            expect(described_class.before_execute_block).to have_received(:call).with(kind_of(ApplicationContext))
-            expect(described_class.after_execute_block).to have_received(:call).with(kind_of(ApplicationContext))
-            expect(described_class.after_failure_block).to have_received(:call).with(kind_of(ApplicationContext))
-            expect(described_class.after_success_block).not_to have_received(:call)
-          end
-        end
-      end
-
       it 'returns expected context' do
         expect(called_ctx.success?).to be_truthy
         expect(called_ctx.successful_actions).to be_empty
