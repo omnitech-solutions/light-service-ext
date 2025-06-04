@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+require_relative 'generators/base'
+require_relative 'generators/dto_generator'
+require_relative 'generators/validator_action_generator'
+require_relative 'generators/create_organizer_generator'
+require_relative 'generators/update_organizer_generator'
+require_relative 'generators/fetch_organizer_generator'
+require_relative 'generators/list_organizer_generator'
+require_relative 'generators/destroy_organizer_generator'
+require_relative 'generators/light_service_generator'
