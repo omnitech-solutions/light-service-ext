@@ -87,6 +87,32 @@ module LightServiceExt
           end
         end
       end
+
+      describe '#fatal_error?' do
+        context 'with error class configured as non fatal' do
+          before { config.non_fatal_error_classes = [ArgumentError] }
+
+          it 'returns false for non fatal error' do
+            expect(config.fatal_error?(ArgumentError.new('x'))).to be_falsey
+          end
+        end
+
+        it 'returns true for unconfigured error class' do
+          expect(config.fatal_error?(RuntimeError.new('y'))).to be_truthy
+        end
+      end
+
+      describe '#non_fatal_error?' do
+        before { config.non_fatal_error_classes = [ArgumentError] }
+
+        it 'returns true when error is configured as non fatal' do
+          expect(config.non_fatal_error?(ArgumentError.new('x'))).to be_truthy
+        end
+
+        it 'returns false for unconfigured error class' do
+          expect(config.non_fatal_error?(RuntimeError.new('y'))).to be_falsey
+        end
+      end
     end
   end
 end
