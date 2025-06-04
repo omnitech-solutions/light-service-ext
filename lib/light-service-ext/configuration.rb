@@ -18,7 +18,7 @@ module LightServiceExt
     end
 
     def fatal_error?(exception)
-      !non_fatal_errors.exclude?(exception.class.name)
+      non_fatal_errors.exclude?(exception.class.name)
     end
 
     def non_fatal_error?(exception)
