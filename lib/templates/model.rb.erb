@@ -4,8 +4,8 @@ class <%= class_name %>
   attr_accessor <%= attributes.map { |a| ":#{a}" }.join(', ') %>
 
   def initialize(<%= attributes.join(', ') %>)
-<% attributes.each do |attr| -%>
+  <%- attributes.each do |attr| -%>
     @<%= attr %> = <%= attr %>
-<% end -%>
+  <%- end -%>
   end
 end

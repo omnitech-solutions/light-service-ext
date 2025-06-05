@@ -13,7 +13,7 @@ objects. Provide a resource name and a list of attributes and it creates organiz
 a validator action and a contract template under `services/`.
 
 The `my_codegen_app.rb` script offers a simple Thor CLI to scaffold plain Ruby
-models. Run `ruby my_codegen_app.rb model user name email` to generate
+models. Run `ruby my_codegen_app.rb model user name email age` to generate
 `user.rb` using the template in `lib/templates/model.rb.erb`.
 
 ## Installation
