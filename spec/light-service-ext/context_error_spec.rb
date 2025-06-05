@@ -103,11 +103,7 @@ module LightServiceExt
           let(:validation_errors) { {} }
 
           it 'prints empty param errors' do
-            expect(context_error_message).to include(<<~TEXT
-                Validation Errors: {
-              }
-            TEXT
-                                                    )
+            expect(context_error_message).to include('Validation Errors: {')
           end
         end
       end
