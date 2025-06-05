@@ -6,7 +6,7 @@ module LightServiceExt
 
     config_accessor(:allow_raise_on_failure) { true }
     config_accessor(:non_fatal_error_classes) { [] }
-    config_accessor(:default_non_fatal_error_classes) { ['Rails::ActiveRecordError'.safe_constantize] }
+    config_accessor(:default_non_fatal_error_classes) { ["Rails::ActiveRecordError".safe_constantize] }
     config_accessor(:on_raised_error) { proc { |_ctx, _error| } }
 
     def allow_raise_on_failure?

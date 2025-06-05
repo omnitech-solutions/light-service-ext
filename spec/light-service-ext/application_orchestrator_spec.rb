@@ -1,6 +1,6 @@
 module LightServiceExt
   RSpec.describe ApplicationOrchestrator do
-    describe '.call' do
+    describe ".call" do
       let(:orchestrator_class) do
         Class.new(described_class) do
           @organizer_action_class = Class.new do
@@ -77,21 +77,21 @@ module LightServiceExt
       let(:input) do
         {
           # This proc now modifies the context it receives
-          organizer_action_proc: ->(context) { context[:params] = (context[:params] || {}).merge(x1: 'x1') },
+          organizer_action_proc: ->(context) { context[:params] = (context[:params] || {}).merge(x1: "x1") },
           # This proc now modifies the context it receives
-          orchestrator_action_proc: ->(context) { context[:params] = (context[:params] || {}).merge(x2: 'x2') }
+          orchestrator_action_proc: ->(context) { context[:params] = (context[:params] || {}).merge(x2: "x2") }
         }
       end
 
-      it 'adds orchestrator params without organizer params' do
+      it "adds orchestrator params without organizer params" do
         ctx = orchestrator_class.call(input)
 
         expect(ctx.keys).to include(:input)
         expect(ctx[:input]).to eql(input)
-        expect(ctx[:params]).to eql(x2: 'x2')
+        expect(ctx[:params]).to eql(x2: "x2")
       end
 
-      context 'with each organizer block' do
+      context "with each organizer block" do
         let(:organizer_block) do
           lambda { |organizer_ctx, orchestrator_ctx:|
             # organizer_ctx is now the LightService::Context with params[:x1]
@@ -99,12 +99,12 @@ module LightServiceExt
           }
         end
 
-        it 'adds organizer param to orchestrator' do
+        it "adds organizer param to orchestrator" do
           orchestrator_ctx = orchestrator_class.call(input, &organizer_block)
 
           expect(orchestrator_ctx.keys).to include(:input)
           expect(orchestrator_ctx[:input]).to eql(input)
-          expect(orchestrator_ctx[:params]).to include(x2: 'x2', x3: 'x1')
+          expect(orchestrator_ctx[:params]).to include(x2: "x2", x3: "x1")
         end
       end
     end

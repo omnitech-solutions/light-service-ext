@@ -100,13 +100,13 @@ module LightServiceExt
     def organizer_name
       return nil if organized_by.nil?
 
-      organized_by.name.split('::').last
+      organized_by.name.split("::").last
     end
 
     def action_name
       return nil if invoked_action.blank?
 
-      invoked_action.name.split('::').last
+      invoked_action.name.split("::").last
     end
 
     def formatted_errors

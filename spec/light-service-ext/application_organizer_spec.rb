@@ -32,13 +32,13 @@ module LightServiceExt
     end
     # rubocop:enable RSpec/AnyInstance
 
-    it 'adds inputted data as input key value pair' do
+    it "adds inputted data as input key value pair" do
       expect(ctx.keys).to include(:input)
       expect(ctx[:input]).to eql(input)
     end
 
-    it 'calls underlying action' do
-      error_proc = proc { raise 'error' }
+    it "calls underlying action" do
+      error_proc = proc { raise "error" }
       error_ctx = subject_class.call(some_proc: error_proc)
       allow(error_ctx).to receive(:organized_by).and_return(described_class)
 

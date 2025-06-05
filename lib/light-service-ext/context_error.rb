@@ -35,11 +35,11 @@ module LightServiceExt
     end
 
     def organizer_name
-      organizer ? organizer.name.split('::').last : 'N/A'
+      organizer ? organizer.name.split("::").last : "N/A"
     end
 
     def action_name
-      action ? action.name.split('::').last : 'N/A'
+      action ? action.name.split("::").last : "N/A"
     end
   end
 end
