@@ -4,7 +4,6 @@ module LightServiceExt
   class ApplicationAction
     extend LightService::Action
 
-
     def self.inherited(base)
       base.extend LifecycleMethods
       base.singleton_class.prepend AroundActionExecuteExtension

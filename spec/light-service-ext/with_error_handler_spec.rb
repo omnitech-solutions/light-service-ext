@@ -9,8 +9,7 @@ module LightServiceExt
     let(:ctx) { ApplicationContext.make_with_defaults }
 
     before do
-      allow(ctx).to receive(:organized_by) { ApplicationOrganizer }
-      allow(ctx).to receive(:invoked_action) { ApplicationAction }
+      allow(ctx).to receive_messages(organized_by: ApplicationOrganizer, invoked_action: ApplicationAction)
     end
 
     describe '.with_error_handler' do

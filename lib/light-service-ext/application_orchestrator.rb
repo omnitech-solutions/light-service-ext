@@ -1,9 +1,9 @@
 module LightServiceExt
   class ApplicationOrchestrator < ApplicationOrganizer
     class << self
-      def call(context, &each_organizer_result)
+      def call(context, &)
         orchestrator_ctx = process_each_organizer(ApplicationContext.make_with_defaults(context),
-                                                  &each_organizer_result)
+                                                  &)
         with(orchestrator_ctx).around_each(RecordActions).reduce(all_steps)
       end
 

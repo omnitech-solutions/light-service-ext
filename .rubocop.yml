@@ -1,11 +1,11 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-rspec
   - rubocop-performance
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.0.6
+  TargetRubyVersion: 3.3
   Exclude:
     - 'lib/light-service-ext.rb'
     - 'vendor/bundle/**/*'
@@ -40,7 +40,10 @@ Style/HashSyntax:
 Style/TrivialAccessors:
   AllowPredicates: true
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
+  Enabled: false
+
+Metrics/ClassLength:
   Enabled: false
 
 Metrics/MethodLength:
@@ -57,6 +60,9 @@ Layout/TrailingEmptyLines:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/LineLength:
+  Max: 150
+
 Lint/ConstantDefinitionInBlock:
   Exclude:
     - 'spec/**/*.rb'
@@ -65,158 +71,158 @@ Lint/EmptyClass:
   Exclude:
     - 'spec/**/*.rb'
 
-# Defaults after the Rubocop upgrade
-Gemspec/DeprecatedAttributeAssignment: # new in 1.10
+# Defaults after the RuboCop upgrade
+Gemspec/DeprecatedAttributeAssignment:
   Enabled: true
 
-Layout/LineEndStringConcatenationIndentation: # new in 1.18
+Layout/LineEndStringConcatenationIndentation:
   Enabled: true
 
-Layout/SpaceBeforeBrackets: # new in 1.7
+Layout/SpaceBeforeBrackets:
   Enabled: true
 
-Lint/AmbiguousAssignment: # new in 1.7
+Lint/AmbiguousAssignment:
   Enabled: true
 
-Lint/AmbiguousOperatorPrecedence: # new in 1.21
+Lint/AmbiguousOperatorPrecedence:
   Enabled: true
 
-Lint/AmbiguousRange: # new in 1.19
+Lint/AmbiguousRange:
   Enabled: true
 
-Lint/DeprecatedConstants: # new in 1.8
+Lint/DeprecatedConstants:
   Enabled: true
 
-Lint/DuplicateBranch: # new in 1.3
+Lint/DuplicateBranch:
   Enabled: true
 
-Lint/DuplicateRegexpCharacterClassElement: # new in 1.1
+Lint/DuplicateRegexpCharacterClassElement:
   Enabled: true
 
-Lint/EmptyBlock: # new in 1.1
+Lint/EmptyBlock:
   Enabled: true
 
-Lint/EmptyInPattern: # new in 1.16
+Lint/EmptyInPattern:
   Enabled: true
 
-Lint/IncompatibleIoSelectWithFiberScheduler: # new in 1.21
+Lint/IncompatibleIoSelectWithFiberScheduler:
   Enabled: true
 
-Lint/LambdaWithoutLiteralBlock: # new in 1.8
+Lint/LambdaWithoutLiteralBlock:
   Enabled: true
 
-Lint/NoReturnInBeginEndBlocks: # new in 1.2
+Lint/NoReturnInBeginEndBlocks:
   Enabled: true
 
-Lint/NumberedParameterAssignment: # new in 1.9
+Lint/NumberedParameterAssignment:
   Enabled: true
 
-Lint/OrAssignmentToConstant: # new in 1.9
+Lint/OrAssignmentToConstant:
   Enabled: true
 
-Lint/RedundantDirGlobSort: # new in 1.8
+Lint/RedundantDirGlobSort:
   Enabled: true
 
-Lint/SymbolConversion: # new in 1.9
+Lint/SymbolConversion:
   Enabled: true
 
-Lint/ToEnumArguments: # new in 1.1
+Lint/ToEnumArguments:
   Enabled: true
 
-Lint/TripleQuotes: # new in 1.9
+Lint/TripleQuotes:
   Enabled: true
 
-Lint/UnexpectedBlockArity: # new in 1.5
+Lint/UnexpectedBlockArity:
   Enabled: true
 
-Lint/UnmodifiedReduceAccumulator: # new in 1.1
+Lint/UnmodifiedReduceAccumulator:
   Enabled: true
 
-Style/ArgumentsForwarding: # new in 1.1
+Style/ArgumentsForwarding:
   Enabled: true
 
-Style/CollectionCompact: # new in 1.2
+Style/CollectionCompact:
   Enabled: true
 
-Style/DocumentDynamicEvalDefinition: # new in 1.1
+Style/DocumentDynamicEvalDefinition:
   Enabled: true
 
-Style/EndlessMethod: # new in 1.8
+Style/EndlessMethod:
   Enabled: true
 
-Style/HashConversion: # new in 1.10
+Style/HashConversion:
   Enabled: true
 
-Style/HashExcept: # new in 1.7
+Style/HashExcept:
   Enabled: true
 
-Style/IfWithBooleanLiteralBranches: # new in 1.9
+Style/IfWithBooleanLiteralBranches:
   Enabled: true
 
-Style/InPatternThen: # new in 1.16
+Style/InPatternThen:
   Enabled: true
 
-Style/MultilineInPatternThen: # new in 1.16
+Style/MultilineInPatternThen:
   Enabled: true
 
-Style/NegatedIfElseCondition: # new in 1.2
+Style/NegatedIfElseCondition:
   Enabled: true
 
-Style/NilLambda: # new in 1.3
+Style/NilLambda:
   Enabled: true
 
-Style/QuotedSymbols: # new in 1.16
+Style/QuotedSymbols:
   Enabled: true
 
-Style/RedundantArgument: # new in 1.4
+Style/RedundantArgument:
   Enabled: true
 
-Style/RedundantSelfAssignmentBranch: # new in 1.19
+Style/RedundantSelfAssignmentBranch:
   Enabled: true
 
-Style/StringChars: # new in 1.12
+Style/StringChars:
   Enabled: true
 
-Style/SwapValues: # new in 1.1
+Style/SwapValues:
   Enabled: true
 
-Gemspec/RequireMFA: # new in 1.23
+Gemspec/RequireMFA:
   Enabled: true
 
-Lint/RequireRelativeSelfPath: # new in 1.22
+Lint/RequireRelativeSelfPath:
   Enabled: true
 
-Lint/UselessRuby2Keywords: # new in 1.23
+Lint/UselessRuby2Keywords:
   Enabled: true
 
-Naming/BlockForwarding: # new in 1.24
+Naming/BlockForwarding:
   Enabled: true
 
-Security/IoMethods: # new in 1.22
+Security/IoMethods:
   Enabled: true
 
-Style/FileRead: # new in 1.24
+Style/FileRead:
   Enabled: true
 
-Style/FileWrite: # new in 1.24
+Style/FileWrite:
   Enabled: true
 
-Style/MapToHash: # new in 1.24
+Style/MapToHash:
   Enabled: true
 
-Style/NestedFileDirname: # new in 1.26
+Style/NestedFileDirname:
   Enabled: true
 
-Style/NumberedParameters: # new in 1.22
+Style/NumberedParameters:
   Enabled: true
 
-Style/NumberedParametersLimit: # new in 1.22
+Style/NumberedParametersLimit:
   Enabled: true
 
-Style/OpenStructUse: # new in 1.23
+Style/OpenStructUse:
   Enabled: true
 
-Style/SelectByRegexp: # new in 1.22
+Style/SelectByRegexp:
   Enabled: true
 
 RSpec/NestedGroups:
@@ -236,12 +242,16 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/PredicateMatcher:
   Enabled: false
-
-RSpec/FilePath:
-  Enabled: false
+  Strict: false
 
 RSpec/SubjectStub:
   Enabled: false
 
 RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/SpecFilePathSuffix:
   Enabled: false
