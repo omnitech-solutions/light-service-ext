@@ -7,6 +7,11 @@ Aims to enhance [light-service](https://github.com/adomokos/light-service) to en
 ## Console
 run `bin/console` for an interactive prompt.
 
+## Generators
+`LightServiceExt::Generators::LightServiceGenerator` automates scaffolding of service
+objects. Provide a resource name and a DTO class and it creates organizers,
+a validator action and a DTO template under `services/`.
+
 ## Installation
 
 Add this line to your application's Gemfile:
