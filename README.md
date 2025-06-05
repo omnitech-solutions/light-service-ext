@@ -76,7 +76,7 @@ class TaxCalculator < LightServiceExt::ApplicationOrganizer
   end
   
   def self.steps
-    [TaxValidator, CalcuateTaxAction]
+    [TaxValidator, CalculateTaxAction]
   end
 end
 ```
