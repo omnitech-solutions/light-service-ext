@@ -5,7 +5,7 @@ module LightServiceExt
     class LightServiceGenerator < Base
       def generate
         plugin_classes.each do |klass|
-          klass.new(resource: resource, dto_class: dto_class, output_root: output_root, force: force).generate
+          klass.new(resource: resource, attributes: attributes, output_root: output_root, force: force).generate
         end
       end
 
@@ -13,7 +13,7 @@ module LightServiceExt
 
       def plugin_classes
         [
-          DtoGenerator,
+          ContractGenerator,
           ValidatorActionGenerator,
           CreateOrganizerGenerator,
           UpdateOrganizerGenerator,

@@ -4,13 +4,7 @@ require 'tmpdir'
 
 module LightServiceExt
   RSpec.describe Generators::CreateOrganizerGenerator do
-    let(:dto_class) do
-      Class.new(LightServiceExt::ApplicationContract) do
-        params do
-          required(:name).filled(:string)
-        end
-      end
-    end
+    let(:attributes) { %w[name email] }
 
     around do |example|
       Dir.mktmpdir do |dir|
@@ -20,7 +14,7 @@ module LightServiceExt
     end
 
     it 'creates organizer file' do
-      generator = described_class.new(resource: 'user', dto_class: dto_class, output_root: @tmp, force: true)
+      generator = described_class.new(resource: 'user', attributes: attributes, output_root: @tmp, force: true)
       generator.generate
 
       file_path = File.join(@tmp, 'services', 'user', 'create_user_organizer.rb')

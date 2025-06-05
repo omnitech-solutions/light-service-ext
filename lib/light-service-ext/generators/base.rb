@@ -6,11 +6,11 @@ require 'active_support/core_ext/string/inflections'
 module LightServiceExt
   module Generators
     class Base
-      attr_reader :resource, :dto_class, :output_root, :force
+      attr_reader :resource, :attributes, :output_root, :force
 
-      def initialize(resource:, dto_class:, output_root: '.', force: false)
+      def initialize(resource:, attributes:, output_root: '.', force: false)
         @resource = resource.to_s
-        @dto_class = dto_class
+        @attributes = Array(attributes).map(&:to_s)
         @output_root = output_root
         @force = force
       end

@@ -16,8 +16,7 @@ RSpec.describe ModelGenerator do
     expect(File).to exist('user.rb')
     content = File.read('user.rb')
     expect(content).to include('class User')
-    expect(content).to include('attr_accessor :name')
-    expect(content).to include('attr_accessor :email')
+    expect(content).to include('attr_accessor :name, :email')
   end
 end
 

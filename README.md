@@ -9,8 +9,8 @@ run `bin/console` for an interactive prompt.
 
 ## Generators
 `LightServiceExt::Generators::LightServiceGenerator` automates scaffolding of service
-objects. Provide a resource name and a DTO class and it creates organizers,
-a validator action and a DTO template under `services/`.
+objects. Provide a resource name and a list of attributes and it creates organizers,
+a validator action and a contract template under `services/`.
 
 The `my_codegen_app.rb` script offers a simple Thor CLI to scaffold plain Ruby
 models. Run `ruby my_codegen_app.rb model user name email` to generate

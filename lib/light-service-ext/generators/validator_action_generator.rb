@@ -15,7 +15,7 @@ module LightServiceExt
           # frozen_string_literal: true
 
           class #{class_name_prefix}ValidatorAction < LightServiceExt::ApplicationValidatorAction
-            self.contract_class = #{dto_class.name}
+            self.contract_class = #{class_name_prefix}Contract
           end
         RUBY
       end

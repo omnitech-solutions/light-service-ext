@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class <%= class_name %>
-<% attributes.each do |attr| %>
-  attr_accessor :<%= attr %>
-<% end %>
+  attr_accessor <%= attributes.map { |a| ":#{a}" }.join(', ') %>
 
   def initialize(<%= attributes.join(', ') %>)
-<% attributes.each do |attr| %>
+<% attributes.each do |attr| -%>
     @<%= attr %> = <%= attr %>
-<% end %>
+<% end -%>
   end
 end
