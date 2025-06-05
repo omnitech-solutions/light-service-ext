@@ -74,10 +74,9 @@ module LightServiceExt
             described_class.configure { |config| config.on_raised_error = callback }
           end
 
-          after(:each) do
-            described_class.configure { |config| config.on_raised_error = proc {|_ctx, _error|} }
+          after do
+            described_class.configure { |config| config.on_raised_error = proc { |_ctx, _error| } }
           end
-
 
           it 'returns set proc' do
             ctx = ApplicationContext.make_with_defaults

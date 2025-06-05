@@ -13,84 +13,83 @@ module LightServiceExt
       let(:backtrace) { ['some-backtrace-line'] }
 
       before do
-        allow(subject).to receive(:organized_by) { ApplicationOrganizer }
-        allow(ctx).to receive(:invoked_action) { ApplicationAction }
+        allow(ctx).to receive_messages(organized_by: ApplicationOrganizer, invoked_action: ApplicationAction)
 
         error.set_backtrace(backtrace)
       end
 
       it 'records the error and adds it to the errors hash' do
-        subject.record_raised_error(error)
+        ctx.record_raised_error(error)
 
-        expect(subject.errors).to eql({ base: error_message })
-        expect(subject.success?).to be_truthy
+        expect(ctx.errors).to eql({ base: error_message })
+        expect(ctx.success?).to be_truthy
 
-        internal_only = subject.internal_only
+        internal_only = ctx.internal_only
         expect(internal_only.keys).to eql([:error_info])
 
         error_info = internal_only[:error_info]
-        expect(error_info.keys).to eql([:organizer, :action_name, :error])
+        expect(error_info.keys).to eql(%i[organizer action_name error])
         expect(error_info[:organizer]).to eql('ApplicationOrganizer')
         expect(error_info[:action_name]).to eql('ApplicationAction')
 
         raised_error_info = error_info[:error]
-        expect(raised_error_info.keys).to eql([:type, :message, :backtrace])
+        expect(raised_error_info.keys).to eql(%i[type message backtrace])
         expect(raised_error_info[:type]).to eql(error.class.name)
         expect(raised_error_info[:message]).to eql(error_message)
         expect(raised_error_info[:backtrace]).to eql(error.backtrace)
       end
 
       it 'fails the operation and sets the error info' do
-        subject.record_raised_error(error)
+        ctx.record_raised_error(error)
 
-        expect(subject.success?).to be(true)
+        expect(ctx.success?).to be(true)
       end
     end
 
     describe '#organizer_name' do
       context 'with organizer' do
-        before { allow(subject).to receive(:organized_by) { ApplicationOrganizer } }
+        before { allow(ctx).to receive(:organized_by).and_return(ApplicationOrganizer) }
 
         it 'returns the name of the organizer class' do
-          expect(subject.organizer_name).to eq('ApplicationOrganizer')
+          expect(ctx.organizer_name).to eq('ApplicationOrganizer')
         end
       end
 
       context 'without organizer' do
-        before { allow(subject).to receive(:organized_by) { nil } }
+        before { allow(ctx).to receive(:organized_by).and_return(nil) }
 
         it 'returns nil' do
-          expect(subject.organizer_name).to be(nil)
+          expect(ctx.organizer_name).to be_nil
         end
       end
     end
 
     describe '#action_name' do
       context 'with invoked action' do
-        before { allow(subject).to receive(:invoked_action) { ApplicationAction } }
+        before { allow(ctx).to receive(:invoked_action).and_return(ApplicationAction) }
 
         it 'returns the name of the organizer class' do
-          expect(subject.action_name).to eq('ApplicationAction')
+          expect(ctx.action_name).to eq('ApplicationAction')
         end
       end
 
       context 'without invoked action' do
-        before { allow(subject).to receive(:invoked_action) { nil } }
+        before { allow(ctx).to receive(:invoked_action).and_return(nil) }
 
         it 'returns nil' do
-          expect(subject.action_name).to be(nil)
+          expect(ctx.action_name).to be_nil
         end
       end
     end
 
     describe '#formatted_errors' do
-      before { allow(subject).to receive(:errors) { errors } }
+      before { allow(ctx).to receive(:errors) { errors } }
 
       context 'with errors' do
         let(:errors) { { name: ['is required'], email: ['is invalid'] } }
 
         it 'returns a JSON string of the errors' do
-          expect(subject.formatted_errors).to eq(JSON.pretty_generate(errors))
+          expect(ctx.formatted_errors).to eq(JSON.pretty_generate(errors))
         end
       end
 
@@ -98,15 +97,15 @@ module LightServiceExt
         let(:errors) { {} }
 
         it 'returns an empty JSON string if there are no errors' do
-          expect(subject.formatted_errors).to eq(JSON.pretty_generate({}))
+          expect(ctx.formatted_errors).to eq(JSON.pretty_generate({}))
         end
       end
 
-      context 'without errors' do
+      context 'with nil errors' do
         let(:errors) { nil }
 
         it 'returns an empty JSON string if there are no errors' do
-          expect(subject.formatted_errors).to eq(JSON.pretty_generate({}))
+          expect(ctx.formatted_errors).to eq(JSON.pretty_generate({}))
         end
       end
     end

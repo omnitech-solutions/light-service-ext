@@ -10,9 +10,7 @@ module LightServiceExt
       end
     end
 
-    let(:organizer_class) do
-      Class.new(ApplicationOrganizer) do end
-    end
+    let(:organizer_class) { Class.new(ApplicationOrganizer) }
 
     let(:value) { 'some-value' }
     let(:callback) { -> { value } }
@@ -53,10 +51,11 @@ module LightServiceExt
         expect(fake_action.after_failure_block).to have_received(:call).at_least(:once)
       end
 
+      # rubocop:disable RSpec/AnyInstance
       context 'with failure' do
         before do
-          allow_any_instance_of(ApplicationContext).to receive(:errors) { {} }
-          allow_any_instance_of(ApplicationContext).to receive(:success?) { true }
+          allow_any_instance_of(ApplicationContext).to receive(:errors).and_return({})
+          allow_any_instance_of(ApplicationContext).to receive(:success?).and_return(true)
         end
 
         it 'calls appropriate lifecycle callbacks' do
@@ -65,9 +64,10 @@ module LightServiceExt
           expect(fake_action.before_execute_block).to have_received(:call).with(kind_of(ApplicationContext)).at_least(:once)
           expect(fake_action.after_execute_block).to have_received(:call).with(kind_of(ApplicationContext)).at_least(:once)
           expect(fake_action.after_success_block).to have_received(:call).with(kind_of(ApplicationContext))
-          expect(fake_action.after_failure_block).to_not have_received(:call)
+          expect(fake_action.after_failure_block).not_to have_received(:call)
         end
       end
+      # rubocop:enable RSpec/AnyInstance
     end
   end
 end

@@ -68,14 +68,14 @@ module LightServiceExt
       add_attrs_to_ctx(:meta, **attrs)
     end
 
-
     def record_raised_error(error)
       @error_info = ErrorInfo.new(error)
       error_type = @error_info.type
       error_message = @error_info.message
       add_internal_only(error_info: { organizer: organizer_name,
                                       action_name: action_name,
-                                      error: { type: error_type, message: error_message, backtrace: @error_info.clean_backtrace } })
+                                      error: { type: error_type, message: error_message,
+                                               backtrace: @error_info.clean_backtrace } })
       add_errors(base: error_message)
 
       LightServiceExt.config.on_raised_error.call(self, error)
@@ -134,7 +134,7 @@ module LightServiceExt
       nil
     end
 
-    def method_missing(method_name, *arguments, &block)
+    def method_missing(method_name, *arguments, &)
       return self[method_name] if key?(method_name)
 
       super

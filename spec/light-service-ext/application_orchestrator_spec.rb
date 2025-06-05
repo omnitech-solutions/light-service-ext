@@ -38,7 +38,7 @@ module LightServiceExt
               [@orchestrator_action_class]
             end
 
-            def call(input_context, &block)
+            def call(input_context)
               # Initialize params as an empty hash for the orchestrator context
               orchestrator_ctx = LightService::Context.make(input: input_context, params: {})
 

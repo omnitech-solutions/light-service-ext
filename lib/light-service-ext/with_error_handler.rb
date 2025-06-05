@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/AbcSize
 module LightServiceExt
   module WithErrorHandler
     def with_error_handler(ctx:)
@@ -13,4 +12,3 @@ module LightServiceExt
     end
   end
 end
-# rubocop:enable Metrics/AbcSize
