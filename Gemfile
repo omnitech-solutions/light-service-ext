@@ -9,3 +9,4 @@ gem 'rubocop', '~> 1.56', '>= 1.56.1'
 gem 'rubocop-performance', '~> 1.19'
 gem "rubocop-rake", ">= 0.6.0"
 gem 'rubocop-rspec', '~> 2.23', '>= 2.23.2'
+gem 'thor', '~> 1.2'
