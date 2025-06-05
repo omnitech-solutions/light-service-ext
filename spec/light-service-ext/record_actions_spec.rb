@@ -2,9 +2,9 @@
 
 module LightServiceExt
   RSpec.describe RecordActions do
-    describe '.call' do
+    describe ".call" do
       let(:input) { {} }
-      let(:action_name) { 'some-action-name' }
+      let(:action_name) { "some-action-name" }
       let(:current_api_response) { nil }
       let(:invoked_action) { nil }
       let(:status) { nil }
@@ -19,7 +19,7 @@ module LightServiceExt
 
       subject(:called_ctx) { described_class.call(ctx, &proc) }
 
-      it 'returns expected context' do
+      it "returns expected context" do
         expect(called_ctx.success?).to be_truthy
         expect(called_ctx.successful_actions).to be_empty
         expect(called_ctx.api_responses).to be_empty
@@ -27,11 +27,11 @@ module LightServiceExt
         expect(called_ctx[:last_failed_context]).to be_nil
       end
 
-      context 'with api response attrs' do
+      context "with api response attrs" do
         let(:invoked_action) { class_double(ApplicationAction, name: action_name) }
-        let(:current_api_response) { 'some-api-response' }
+        let(:current_api_response) { "some-api-response" }
 
-        it 'adds api_response as last api response' do
+        it "adds api_response as last api response" do
           expect(called_ctx.success?).to be_truthy
           expect(called_ctx.successful_actions).to contain_exactly(action_name)
           expect(called_ctx.api_responses).to contain_exactly(current_api_response)
@@ -39,10 +39,10 @@ module LightServiceExt
           expect(called_ctx[:last_failed_context]).to be_nil
         end
 
-        context 'with completed status' do
+        context "with completed status" do
           let(:status) { :all_steps_complete }
 
-          it 'adds errors and last failed context' do
+          it "adds errors and last failed context" do
             expect(called_ctx.success?).to be_truthy
             expect(called_ctx.successful_actions).to be_empty
             expect(called_ctx.api_responses).to be_empty
@@ -50,10 +50,10 @@ module LightServiceExt
             expect(called_ctx[:last_failed_context]).to be_nil
           end
 
-          context 'with errors' do
-            let(:errors) { { base: 'some-message' } }
+          context "with errors" do
+            let(:errors) { { base: "some-message" } }
 
-            it 'adds last failed context and fails the context' do
+            it "adds last failed context and fails the context" do
               expect(called_ctx.success?).to be_falsey
               expect(called_ctx.successful_actions).to be_empty
               expect(called_ctx.api_responses).to be_empty

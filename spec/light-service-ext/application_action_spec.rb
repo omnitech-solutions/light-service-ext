@@ -12,7 +12,7 @@ module LightServiceExt
 
     let(:organizer_class) { Class.new(ApplicationOrganizer) }
 
-    let(:value) { 'some-value' }
+    let(:value) { "some-value" }
     let(:callback) { -> { value } }
     let(:input) { { callback: callback } }
     let(:ctx) do
@@ -28,13 +28,13 @@ module LightServiceExt
       allow(organizer_class).to receive(:steps) { [fake_action] }
     end
 
-    it 'adds value returned by callback to params' do
+    it "adds value returned by callback to params" do
       expect(executed_ctx.keys).to include(:input, :errors, :params)
 
       expect(executed_ctx[:params]).to eql({ value: value })
     end
 
-    describe 'lifecycle callbacks' do
+    describe "lifecycle callbacks" do
       before do
         allow(fake_action.before_execute_block).to receive(:call)
         allow(fake_action.after_execute_block).to receive(:call)
@@ -42,7 +42,7 @@ module LightServiceExt
         allow(fake_action.after_failure_block).to receive(:call)
       end
 
-      it 'calls appropriate lifecycle callbacks' do
+      it "calls appropriate lifecycle callbacks" do
         executed_ctx
 
         expect(fake_action.before_execute_block).to have_received(:call).with(kind_of(ApplicationContext)).at_least(:once)
@@ -52,13 +52,13 @@ module LightServiceExt
       end
 
       # rubocop:disable RSpec/AnyInstance
-      context 'with failure' do
+      context "with failure" do
         before do
           allow_any_instance_of(ApplicationContext).to receive(:errors).and_return({})
           allow_any_instance_of(ApplicationContext).to receive(:success?).and_return(true)
         end
 
-        it 'calls appropriate lifecycle callbacks' do
+        it "calls appropriate lifecycle callbacks" do
           executed_ctx
 
           expect(fake_action.before_execute_block).to have_received(:call).with(kind_of(ApplicationContext)).at_least(:once)

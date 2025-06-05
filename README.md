@@ -255,6 +255,36 @@ LightServiceExt::ApplicationContext.make_with_defaults(input, overrides, meta: m
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
+### Commit hooks
+
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) to run lint, security and test tools.
+
+Install Lefthook with Homebrew or RubyGems and run `lefthook install` to set up the git hooks:
+
+```bash
+brew install lefthook # or: gem install lefthook
+lefthook install
+```
+
+You can manually run all checks with:
+
+```bash
+lefthook run pre-commit
+lefthook run pre-push
+```
+
+The same commands are executed in the CI workflow.
+
+### Running checks manually
+
+Each tool can also be run directly:
+
+```bash
+bundle exec rubocop
+bundle exec bundler-audit check --update
+bundle exec rspec
+```
+
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing

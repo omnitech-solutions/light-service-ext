@@ -10,31 +10,31 @@ module LightServiceExt
       end
     end
 
-    describe '.keys' do
-      it 'returns schema rule keys' do
+    describe ".keys" do
+      it "returns schema rule keys" do
         expect(contract_class.keys).to contain_exactly(:email)
       end
     end
 
-    describe '.register_macro' do
-      describe ':email' do
+    describe ".register_macro" do
+      describe ":email" do
         let(:email) { nil }
         let(:params) { { email: email } }
 
         subject(:result) { contract_class.new.call(params) }
 
-        context 'with valid email' do
-          let(:email) { 'email@domain.com' }
+        context "with valid email" do
+          let(:email) { "email@domain.com" }
 
-          it 'returns success' do
+          it "returns success" do
             expect(result).to be_success
           end
         end
 
-        context 'with invalid email' do
-          let(:email) { 'emaildomain.com' }
+        context "with invalid email" do
+          let(:email) { "emaildomain.com" }
 
-          it 'returns failure' do
+          it "returns failure" do
             expect(result).to be_failure
 
             errors = result.errors.to_h

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require File.join(__dir__, "..", 'dev', 'setup')
-require Pathname.new(__dir__).realpath.join('coverage_helper').to_s
+require File.join(__dir__, "..", "dev", "setup")
+require Pathname.new(__dir__).realpath.join("coverage_helper").to_s
 
-require 'light-service/testing'
+require "light-service/testing"
 
 unless defined? Rails
   module Rails

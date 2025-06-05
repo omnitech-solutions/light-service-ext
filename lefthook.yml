@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      run: bundle exec rubocop -c .rubocop.yml --autocorrect
+pre-push:
+  parallel: true
+  commands:
+    bundler-audit:
+      run: bundle exec bundler-audit check --update
+    rspec:
+      run: bundle exec rspec
