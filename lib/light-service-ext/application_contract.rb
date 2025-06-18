@@ -16,8 +16,8 @@ module LightServiceExt
       end
 
       unless respond_to?(:t)
-        def t(key, base_path: "errors", **)
-          self.class.t(key, base_path: base_path, **)
+        def t(key, base_path: "errors", **kwargs)
+          self.class.t(key, base_path: base_path, **kwargs)
         end
       end
     end
